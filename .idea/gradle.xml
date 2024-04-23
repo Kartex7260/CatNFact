@@ -17,6 +17,7 @@
             <option value="$PROJECT_DIR$/data/settings/impl" />
             <option value="$PROJECT_DIR$/data/settings/impl/datastore" />
             <option value="$PROJECT_DIR$/feat" />
+            <option value="$PROJECT_DIR$/feat/facts" />
             <option value="$PROJECT_DIR$/feat/settings" />
             <option value="$PROJECT_DIR$/ui" />
           </set>

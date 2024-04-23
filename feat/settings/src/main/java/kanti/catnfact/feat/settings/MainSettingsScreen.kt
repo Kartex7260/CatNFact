@@ -21,7 +21,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import kanti.catnfact.ui.components.settings.ColorStyleItem
+import kanti.catnfact.ui.components.settings.ColorStyleItemDefaults
 import kanti.catnfact.ui.components.settings.DarkModeItem
+import kanti.catnfact.ui.components.settings.DarkModeItemDefaults
+import kanti.catnfact.ui.components.settings.DarkModeStrings
 import kanti.catnfact.ui.theme.CatNFactTheme
 
 @Composable
@@ -76,6 +79,12 @@ fun MainSettingsContent(
 			item {
 				DarkModeItem(
 					state = uiState.darkMode,
+					strings = DarkModeItemDefaults.strings(
+						darkMode = stringResource(id = R.string.set_dark_mode),
+						light = stringResource(id = R.string.light),
+						dark = stringResource(id = R.string.dark),
+						asSystem = stringResource(id = R.string.as_system)
+					),
 					onChangeDarkMode = {
 						onUiSettingsAction(SetDarkModeIntent(it))
 					}
@@ -85,6 +94,11 @@ fun MainSettingsContent(
 			item {
 				ColorStyleItem(
 					state = uiState.colorStyle,
+					strings = ColorStyleItemDefaults.strings(
+						colorStyle = stringResource(id = R.string.set_color_style),
+						catNFact = stringResource(id = R.string.cat_n_fact),
+						asSystem = stringResource(id = R.string.as_system)
+					),
 					onChangeColorStyle = {
 						onUiSettingsAction(SetColorStyleIntent(it))
 					}

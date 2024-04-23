@@ -3,4 +3,13 @@
 
     <string name="settings">Settings</string>
 
+    <string name="set_dark_mode">Set app dark mode</string>
+    <string name="light">Light</string>
+    <string name="dark">Dark</string>
+
+    <string name="set_color_style">Set app color style</string>
+    <string name="cat_n_fact">CatNFact</string>
+
+    <string name="as_system">As system</string>
+
 </resources>

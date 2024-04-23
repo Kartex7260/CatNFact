@@ -1,7 +1,10 @@
 package kanti.catnfact
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -12,7 +15,8 @@ import kanti.catnfact.ui.theme.ColorStyle
 
 @Composable
 fun MainContent(
-	darkMode: DarkModeUiState
+	darkMode: DarkModeUiState,
+	colorStyle: ColorStyle
 ) {
 	CatNFactTheme(
 		darkTheme = when (darkMode) {
@@ -20,19 +24,23 @@ fun MainContent(
 			DarkModeUiState.Dark -> true
 			DarkModeUiState.AsSystem -> isSystemInDarkTheme()
 		},
-		colorStyle = ColorStyle.CatNFact
+		colorStyle = colorStyle
 	) {
 		val navController = rememberNavController()
-		NavHost(
-			navController = navController,
-			startDestination = Destinations.SETTINGS
+		Surface(
+			modifier = Modifier.fillMaxSize()
 		) {
-			composable(
-				route = Destinations.SETTINGS
+			NavHost(
+				navController = navController,
+				startDestination = Destinations.SETTINGS
 			) {
-				MainSettingsScreen(
-					navController = navController
-				)
+				composable(
+					route = Destinations.SETTINGS
+				) {
+					MainSettingsScreen(
+						navController = navController
+					)
+				}
 			}
 		}
 	}

@@ -1,6 +1,7 @@
 package kanti.catnfact.feat.settings
 
 import androidx.compose.runtime.Immutable
+import kanti.catnfact.data.model.settings.ColorStyle
 import kanti.catnfact.data.model.settings.DarkMode
 import kanti.catnfact.ui.components.settings.ColorStyleUiState
 import kanti.catnfact.ui.components.settings.DarkModeUiState
@@ -24,5 +25,19 @@ fun DarkModeUiState.toDarkMode(): DarkMode {
 		DarkModeUiState.Light -> DarkMode.Light
 		DarkModeUiState.Dark -> DarkMode.Dark
 		DarkModeUiState.AsSystem -> DarkMode.AsSystem
+	}
+}
+
+fun ColorStyle.toUiState(): ColorStyleUiState {
+	return when (this) {
+		ColorStyle.CatNFact -> ColorStyleUiState.CatNFact
+		ColorStyle.AsSystem -> ColorStyleUiState.AsSystem
+	}
+}
+
+fun ColorStyleUiState.toColorStyle(): ColorStyle {
+	return when (this) {
+		ColorStyleUiState.CatNFact -> ColorStyle.CatNFact
+		ColorStyleUiState.AsSystem -> ColorStyle.AsSystem
 	}
 }

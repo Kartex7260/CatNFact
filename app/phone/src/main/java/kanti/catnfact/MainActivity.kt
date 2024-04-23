@@ -17,9 +17,11 @@ class MainActivity : ComponentActivity() {
 		super.onCreate(savedInstanceState)
 		setContent {
 			val darkMode by viewModel.darkMode.collectAsState()
+			val colorStyle by viewModel.colorStyle.collectAsState()
 
 			MainContent(
-				darkMode = darkMode
+				darkMode = darkMode,
+				colorStyle = colorStyle
 			)
 		}
 	}

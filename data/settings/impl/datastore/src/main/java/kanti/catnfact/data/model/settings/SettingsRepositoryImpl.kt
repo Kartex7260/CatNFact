@@ -15,6 +15,7 @@ import javax.inject.Inject
 private const val dataStoreName = "settings"
 
 private const val darkModeKeyName = "darkMode"
+private const val colorStyleKeyName = "colorStyle"
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = dataStoreName)
 
@@ -23,6 +24,7 @@ class SettingsRepositoryImpl @Inject constructor(
 ) : SettingsRepository {
 
 	private val darkModeKey = stringPreferencesKey(name = darkModeKeyName)
+	private val colorStyleKey = stringPreferencesKey(name = colorStyleKeyName)
 
 	override val settings: Flow<SettingsData> = context.dataStore.data
 		.map { preferences ->
@@ -38,17 +40,34 @@ class SettingsRepositoryImpl @Inject constructor(
 				}
 			}
 
+			val colorStyle = preferences[colorStyleKey].run {
+				if (this == null) {
+					returnNull = true
+					setDefaultColorStyle()
+					ColorStyle.CatNFact
+				} else {
+					ColorStyle.valueOf(this)
+				}
+			}
+
 			if (returnNull)
 				return@map null
 			SettingsData(
-				darkMode = darkMode
+				darkMode = darkMode,
+				colorStyle = colorStyle
 			)
 		}
 		.filterNotNull()
 
 	override suspend fun setDarkMode(darkMode: DarkMode) {
-		context.dataStore.edit {
-			it[darkModeKey] = darkMode.name
+		context.dataStore.edit { preferences ->
+			preferences[darkModeKey] = darkMode.name
+		}
+	}
+
+	override suspend fun setColorStyle(colorStyle: ColorStyle) {
+		context.dataStore.edit { preferences ->
+			preferences[colorStyleKey] = colorStyle.name
 		}
 	}
 }

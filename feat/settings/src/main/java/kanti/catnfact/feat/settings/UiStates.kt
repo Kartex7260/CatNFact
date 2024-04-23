@@ -2,11 +2,13 @@ package kanti.catnfact.feat.settings
 
 import androidx.compose.runtime.Immutable
 import kanti.catnfact.data.model.settings.DarkMode
+import kanti.catnfact.ui.components.settings.ColorStyleUiState
 import kanti.catnfact.ui.components.settings.DarkModeUiState
 
 @Immutable
 data class UiSettingsUiState(
-	val darkMode: DarkModeUiState = DarkModeUiState.AsSystem
+	val darkMode: DarkModeUiState = DarkModeUiState.AsSystem,
+	val colorStyle: ColorStyleUiState = ColorStyleUiState.CatNFact
 )
 
 fun DarkMode.toUiState(): DarkModeUiState {

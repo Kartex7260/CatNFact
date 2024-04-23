@@ -31,7 +31,8 @@ class MainSettingsViewModel @Inject constructor(
 
 	fun onUiSettingsAction(uiIntent: UiSettingsIntent) {
 		when (uiIntent) {
-			is DarkModeIntent -> setDarkMode(uiIntent.darkMode)
+			is SetDarkModeIntent -> setDarkMode(uiIntent.darkMode)
+			is SetColorStyleIntent -> {}
 		}
 	}
 

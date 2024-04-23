@@ -20,6 +20,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import kanti.catnfact.ui.components.settings.ColorStyleItem
 import kanti.catnfact.ui.components.settings.DarkModeItem
 import kanti.catnfact.ui.theme.CatNFactTheme
 
@@ -76,7 +77,16 @@ fun MainSettingsContent(
 				DarkModeItem(
 					state = uiState.darkMode,
 					onChangeDarkMode = {
-						onUiSettingsAction(DarkModeIntent(it))
+						onUiSettingsAction(SetDarkModeIntent(it))
+					}
+				)
+			}
+
+			item {
+				ColorStyleItem(
+					state = uiState.colorStyle,
+					onChangeColorStyle = {
+						onUiSettingsAction(SetColorStyleIntent(it))
 					}
 				)
 			}

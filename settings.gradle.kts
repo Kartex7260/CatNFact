@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 rootProject.name = "CatNFact"
 include(":app:phone")
 include(":ui")
+include(":feat:settings")

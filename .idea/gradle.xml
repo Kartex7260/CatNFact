@@ -11,6 +11,8 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/app/phone" />
+            <option value="$PROJECT_DIR$/feat" />
+            <option value="$PROJECT_DIR$/feat/settings" />
             <option value="$PROJECT_DIR$/ui" />
           </set>
         </option>

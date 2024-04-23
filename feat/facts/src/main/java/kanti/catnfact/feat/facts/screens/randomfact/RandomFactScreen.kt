@@ -25,6 +25,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,27 +35,44 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import kanti.catnfact.feat.facts.FactsDestinations
 import kanti.catnfact.feat.facts.R
 import kanti.catnfact.ui.components.fact.FactUiState
 import kanti.catnfact.ui.theme.CatNFactTheme
 
 @Composable
 fun RandomFactScreen(
-	toSettings: () -> Unit = {}
+	toSettings: () -> Unit = {},
+	navController: NavController = rememberNavController()
 ) {
+	val viewModel = hiltViewModel<RandomFactViewModel>()
+	val state by viewModel.factUiState.collectAsState()
+
 	RandomFactContent(
-		toSettings = toSettings,
-		state = RandomFactUiState(),
-		onAction = {}
+		state = state,
+		onScreenAction = { intent ->
+			when (intent) {
+				is ToSettingsIntent -> toSettings()
+				is ToFactListIntent -> {
+					navController.navigate(route = FactsDestinations.FACT_LIST)
+				}
+			}
+		},
+		onFactAction = { intent ->
+			viewModel.onAction(intent)
+		}
 	)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RandomFactContent(
-	toSettings: () -> Unit = {},
 	state: RandomFactUiState,
-	onAction: (RandomFactIntent) -> Unit
+	onScreenAction: (FactScreenIntent) -> Unit,
+	onFactAction: (RandomFactIntent) -> Unit
 ) {
 	Scaffold(
 		topBar = {
@@ -79,7 +97,9 @@ fun RandomFactContent(
 									contentDescription = null
 								)
 							},
-							onClick = toSettings
+							onClick = {
+								onScreenAction(ToSettingsIntent)
+							}
 						)
 					}
 				}
@@ -105,7 +125,7 @@ fun RandomFactContent(
 				modifier = Modifier.fillMaxWidth()
 			) {
 				IconButton(
-					onClick = { onAction(ChangeFavouriteIntent(state.fact.hash))  },
+					onClick = { onFactAction(ChangeFavouriteIntent(state.fact.hash))  },
 					colors = IconButtonDefaults.filledTonalIconButtonColors()
 				) {
 					val painter = if (state.fact.isFavourite)
@@ -121,7 +141,7 @@ fun RandomFactContent(
 					horizontalArrangement = Arrangement.End
 				) {
 					FilledTonalButton(
-						onClick = { onAction(ToFactListIntent) }
+						onClick = { onScreenAction(ToFactListIntent) }
 					) {
 						Text(text = stringResource(id = R.string.see_all_facts))
 					}
@@ -129,7 +149,7 @@ fun RandomFactContent(
 					Spacer(modifier = Modifier.width(8.dp))
 
 					Button(
-						onClick = { onAction(NextRandomFactIntent) },
+						onClick = { onFactAction(NextRandomFactIntent) },
 						contentPadding = PaddingValues(
 							end = 16.dp,
 							start = 24.dp
@@ -162,7 +182,8 @@ private fun PreviewRandomFactContent() {
 					isFavourite = false
 				)
 			),
-			onAction = {}
+			onScreenAction = {},
+			onFactAction = {}
 		)
 	}
 }

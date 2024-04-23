@@ -29,4 +29,5 @@ fun FactsNavHost(
 object FactsDestinations {
 
 	const val RANDOM_FACT = "random_fact"
+	const val FACT_LIST = "fact_list"
 }

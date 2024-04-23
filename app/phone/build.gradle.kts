@@ -48,6 +48,7 @@ dependencies {
 
 	implementation(libs.compose.material3)
 	implementation(libs.compose.activity)
+	implementation(libs.compose.navigation)
 
 	implementation(libs.compose.ui.tooling.preview)
 	debugImplementation(libs.compose.ui.tooling)
@@ -55,5 +56,8 @@ dependencies {
 	implementation(libs.dagger.hilt.android)
 	kapt(libs.dagger.hilt.android.compiler)
 
+	implementation(project(":data:settings:api"))
+	implementation(project(":data:settings:impl:datastore"))
+	implementation(project(":feat:settings"))
 	implementation(project(":ui"))
 }

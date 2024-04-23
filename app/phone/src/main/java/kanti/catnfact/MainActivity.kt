@@ -3,31 +3,24 @@ package kanti.catnfact
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import kanti.catnfact.ui.theme.CatNFactTheme
-import kanti.catnfact.ui.theme.ColorStyle
+import androidx.activity.viewModels
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+	private val viewModel by viewModels<MainViewModel>()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContent {
-			MainContent()
-		}
-	}
-}
+			val darkMode by viewModel.darkMode.collectAsState()
 
-@Composable
-fun MainContent() {
-	CatNFactTheme(
-		colorStyle = ColorStyle.AsSystem
-	) {
-		Surface(
-			modifier = Modifier.fillMaxSize()
-		) {
+			MainContent(
+				darkMode = darkMode
+			)
 		}
 	}
 }

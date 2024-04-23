@@ -2,6 +2,7 @@ package kanti.catnfact.feat.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kanti.catnfact.data.model.settings.SettingsRepository
 import kanti.catnfact.ui.components.settings.DarkModeUiState
 import kotlinx.coroutines.flow.SharingStarted
@@ -11,6 +12,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class MainSettingsViewModel @Inject constructor(
 	private val settingsRepository: SettingsRepository
 ) : ViewModel() {

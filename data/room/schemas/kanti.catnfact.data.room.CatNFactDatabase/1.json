@@ -1,0 +1,46 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "68feeec5cf8ff73e5bcd117236dd58a5",
+    "entities": [
+      {
+        "tableName": "facts",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`hash` TEXT NOT NULL, `fact` TEXT NOT NULL, `is_favourite` INTEGER NOT NULL, PRIMARY KEY(`hash`))",
+        "fields": [
+          {
+            "fieldPath": "hash",
+            "columnName": "hash",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fact",
+            "columnName": "fact",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isFavourite",
+            "columnName": "is_favourite",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "hash"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '68feeec5cf8ff73e5bcd117236dd58a5')"
+    ]
+  }
+}

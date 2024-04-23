@@ -6,9 +6,7 @@ sealed interface DataError {
 	val throwable: Throwable?
 }
 
-sealed interface LocalError : DataError
-
-data class NotFoundError(
+data class ValueIsNullError(
 	override val message: String? = null,
 	override val throwable: Throwable? = null
-): LocalError
+) : DataError, LocalError, RemoteError

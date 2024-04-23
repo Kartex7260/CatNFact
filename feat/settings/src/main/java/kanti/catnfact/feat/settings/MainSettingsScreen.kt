@@ -12,10 +12,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import kanti.catnfact.ui.components.settings.DarkModeItem
@@ -25,12 +27,17 @@ import kanti.catnfact.ui.theme.CatNFactTheme
 fun MainSettingsScreen(
 	navController: NavController = rememberNavController()
 ) {
+	val viewModel = hiltViewModel<MainSettingsViewModel>()
 	MainSettingsContent(
-		uiState = UiSettingsUiState(),
-		onScreenAction = {
-			navController.popBackStack()
+		uiState = viewModel.uiSettings.collectAsState().value,
+		onScreenAction = { intent ->
+			when (intent) {
+				OnBackIntent -> navController.popBackStack()
+			}
 		},
-		onUiSettingsAction = {}
+		onUiSettingsAction = { intent ->
+			viewModel.onUiSettingsAction(intent)
+		}
 	)
 }
 

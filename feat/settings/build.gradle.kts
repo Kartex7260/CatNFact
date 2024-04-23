@@ -53,5 +53,6 @@ dependencies {
 	implementation(libs.dagger.hilt.android)
 	kapt(libs.dagger.hilt.android.compiler)
 
+	implementation(project(":data:settings:api"))
 	implementation(project(":ui"))
 }

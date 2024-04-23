@@ -1,4 +1,4 @@
-package kanti.catnfact
+package kanti.catnfact.ui.activity
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

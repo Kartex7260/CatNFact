@@ -1,4 +1,4 @@
-package kanti.catnfact
+package kanti.catnfact.ui.activity
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import kanti.catnfact.feat.settings.MainSettingsScreen
 import kanti.catnfact.ui.components.settings.DarkModeUiState
+import kanti.catnfact.ui.main.MainFeatures
 import kanti.catnfact.ui.theme.CatNFactTheme
 import kanti.catnfact.ui.theme.ColorStyle
 
@@ -32,13 +33,23 @@ fun MainContent(
 		) {
 			NavHost(
 				navController = navController,
-				startDestination = Destinations.SETTINGS
+				startDestination = Destinations.MAIN_FEATURES
 			) {
 				composable(
 					route = Destinations.SETTINGS
 				) {
 					MainSettingsScreen(
 						navController = navController
+					)
+				}
+
+				composable(
+					route = Destinations.MAIN_FEATURES
+				) {
+					MainFeatures(
+						toSettings = {
+							navController.navigate(route = Destinations.SETTINGS)
+						}
 					)
 				}
 			}
@@ -49,4 +60,5 @@ fun MainContent(
 object Destinations {
 
 	const val SETTINGS = "settings"
+	const val MAIN_FEATURES = "main_features"
 }

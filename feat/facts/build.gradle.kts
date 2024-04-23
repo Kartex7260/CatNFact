@@ -44,5 +44,5 @@ dependencies {
 	debugImplementation(libs.compose.ui.tooling)
 
 	implementation(libs.dagger.hilt.android)
-	implementation(libs.dagger.hilt.android.compiler)
+	kapt(libs.dagger.hilt.android.compiler)
 }

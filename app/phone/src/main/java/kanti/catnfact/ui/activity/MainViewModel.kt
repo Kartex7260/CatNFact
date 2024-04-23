@@ -1,4 +1,4 @@
-package kanti.catnfact
+package kanti.catnfact.ui.activity
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

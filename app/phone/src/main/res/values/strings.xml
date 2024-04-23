@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">CatNFact</string>
+    
+    <string name="facts">Facts</string>
+    <string name="breeds">Breeds</string>
+    <string name="favourites">Favourites</string>
 </resources>

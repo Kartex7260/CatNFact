@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="fact">Fact</string>
+    <string name="settings">Settings</string>
+
+    <string name="next_fact">Next fact</string>
+    <string name="see_all_facts">See all facts</string>
+
+</resources>

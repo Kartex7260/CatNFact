@@ -29,6 +29,13 @@ android {
 	kotlinOptions {
 		jvmTarget = "1.8"
 	}
+
+	buildFeatures {
+		compose = true
+	}
+	composeOptions {
+		kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
+	}
 }
 
 dependencies {
@@ -45,4 +52,7 @@ dependencies {
 
 	implementation(libs.dagger.hilt.android)
 	kapt(libs.dagger.hilt.android.compiler)
+
+	implementation(project(":ui"))
+	implementation(project(":ui:facts"))
 }

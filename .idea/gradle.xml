@@ -20,6 +20,7 @@
             <option value="$PROJECT_DIR$/feat/facts" />
             <option value="$PROJECT_DIR$/feat/settings" />
             <option value="$PROJECT_DIR$/ui" />
+            <option value="$PROJECT_DIR$/ui/facts" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />

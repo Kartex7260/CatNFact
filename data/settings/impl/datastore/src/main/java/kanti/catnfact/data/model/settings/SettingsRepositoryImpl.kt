@@ -31,6 +31,7 @@ class SettingsRepositoryImpl @Inject constructor(
 			val darkMode = preferences[darkModeKey].run {
 				if (this == null) {
 					returnNull = true
+					setDefaultDarkMode()
 					DarkMode.AsSystem
 				} else {
 					DarkMode.valueOf(this)

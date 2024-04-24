@@ -6,4 +6,5 @@ import kanti.catnfact.ui.components.fact.FactUiState
 @Immutable
 data class RandomFactUiState(
 	val fact: FactUiState = FactUiState(),
+	val isLoading: Boolean = false
 )

@@ -1,6 +1,5 @@
 package kanti.catnfact.feat.facts.screens.randomfact
 
-import androidx.compose.runtime.ProduceStateScope
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,17 +11,12 @@ import kanti.catnfact.feat.facts.toUiState
 import kanti.catnfact.ui.components.fact.FactUiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.ProducerScope
-import kotlinx.coroutines.channels.produce
-import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.channelFlow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.transform
-import kotlinx.coroutines.yield
 import javax.inject.Inject
 
 @HiltViewModel

@@ -5,11 +5,11 @@ import kanti.catnfact.data.DataResult
 import kanti.catnfact.data.app.AppDataRepository
 import kanti.catnfact.data.model.fact.Fact
 import kanti.catnfact.data.model.fact.FactRepository
+import kanti.catnfact.data.runIfNotError
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -22,14 +22,13 @@ class GetInitialRandomFactUseCase @Inject constructor(
 	suspend operator fun invoke(): Flow<DataResult<Fact, DataError>> {
 		return channelFlow {
 			withContext(Dispatchers.Default) {
-				val localJob = launch {
-					val lastHash = appDataRepository.lastFactHash.first() ?: return@launch
-					val fact = factRepository.getFact(lastHash).value ?: return@launch
-					send(DataResult.Success(fact))
+				val lastHash = appDataRepository.lastFactHash.firstOrNull()
+				if (lastHash != null) {
+					val fact = factRepository.getFact(lastHash)
+					send(fact.runIfNotError { DataResult.Success(it) })
 				}
 
 				val randomFact = getRandomFactUseCase()
-				localJob.cancel()
 				send(randomFact)
 			}
 		}

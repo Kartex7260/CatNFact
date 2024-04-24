@@ -7,4 +7,7 @@
     <string name="next_fact">Next fact</string>
     <string name="see_all_facts">See all facts</string>
 
+    <string name="no_connection">There is no internet connection</string>
+    <string name="refresh">Refresh</string>
+
 </resources>

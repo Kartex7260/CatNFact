@@ -1,11 +1,15 @@
 package kanti.catnfact.feat.facts.screens.randomfact
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -43,6 +47,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import kanti.catnfact.feat.facts.FactsDestinations
 import kanti.catnfact.feat.facts.R
+import kanti.catnfact.ui.components.error.ErrorPanel
+import kanti.catnfact.ui.components.error.ErrorState
 import kanti.catnfact.ui.components.fact.FactUiState
 import kanti.catnfact.ui.theme.CatNFactTheme
 
@@ -109,72 +115,96 @@ fun RandomFactContent(
 			)
 		}
 	) { paddingValues ->
-		Column(
+		Box(
 			modifier = Modifier
 				.padding(paddingValues)
-				.padding(
-					vertical = 12.dp,
-					horizontal = 16.dp
-				)
+				.fillMaxSize()
 		) {
-			Box {
-				Text(
-					text = state.fact.fact,
-					style = MaterialTheme.typography.headlineMedium
-				)
-				if (state.isLoading) {
-					CircularProgressIndicator(
-						modifier = Modifier.align(Alignment.Center)
+			Column(
+				modifier = Modifier
+					.padding(
+						vertical = 12.dp,
+						horizontal = 16.dp
 					)
+			) {
+				Box(
+					modifier = Modifier.fillMaxWidth()
+				) {
+					Text(
+						text = state.fact.fact,
+						style = MaterialTheme.typography.headlineMedium
+					)
+					if (state.isLoading) {
+						CircularProgressIndicator(
+							modifier = Modifier.align(Alignment.Center)
+						)
+					}
+				}
+
+				Spacer(modifier = Modifier.height(12.dp))
+
+				Row(
+					modifier = Modifier.fillMaxWidth()
+				) {
+					IconButton(
+						onClick = { onFactAction(ChangeFavouriteIntent(state.fact.hash))  },
+						colors = IconButtonDefaults.filledTonalIconButtonColors(),
+						enabled = !state.isLoading
+					) {
+						val painter = if (state.fact.isFavourite)
+							painterResource(id = R.drawable.round_star_24)
+						else painterResource(id = R.drawable.round_star_outline_24)
+
+						Icon(painter = painter, contentDescription = null)
+					}
+
+					Row(
+						modifier = Modifier
+							.weight(1f),
+						horizontalArrangement = Arrangement.End
+					) {
+						FilledTonalButton(
+							onClick = { onScreenAction(ToFactListIntent) }
+						) {
+							Text(text = stringResource(id = R.string.see_all_facts))
+						}
+
+						Spacer(modifier = Modifier.width(8.dp))
+
+						Button(
+							onClick = { onFactAction(NextRandomFactIntent) },
+							enabled = !state.isLoading,
+							contentPadding = PaddingValues(
+								end = 16.dp,
+								start = 24.dp
+							)
+						) {
+							Text(text = stringResource(id = R.string.next_fact))
+							Spacer(modifier = Modifier.width(8.dp))
+							Icon(
+								painter = painterResource(id = R.drawable.next),
+								contentDescription = null
+							)
+						}
+					}
 				}
 			}
 
-			Spacer(modifier = Modifier.height(12.dp))
-
-			Row(
-				modifier = Modifier.fillMaxWidth()
+			AnimatedVisibility(
+				modifier = Modifier.align(Alignment.BottomCenter),
+				visible = state.isNoConnection,
+				enter = slideInVertically { it },
+				exit = slideOutVertically { it }
 			) {
-				IconButton(
-					onClick = { onFactAction(ChangeFavouriteIntent(state.fact.hash))  },
-					colors = IconButtonDefaults.filledTonalIconButtonColors(),
-					enabled = !state.isLoading
-				) {
-					val painter = if (state.fact.isFavourite)
-						painterResource(id = R.drawable.round_star_24)
-					else painterResource(id = R.drawable.round_star_outline_24)
-
-					Icon(painter = painter, contentDescription = null)
-				}
-
-				Row(
-					modifier = Modifier
-						.weight(1f),
-					horizontalArrangement = Arrangement.End
-				) {
-					FilledTonalButton(
-						onClick = { onScreenAction(ToFactListIntent) }
-					) {
-						Text(text = stringResource(id = R.string.see_all_facts))
+				ErrorPanel(
+					state = ErrorState(
+						title = stringResource(id = R.string.no_connection),
+						callbackLabel = stringResource(id = R.string.refresh)
+					),
+					onCallback =  {
+						onFactAction(NextRandomFactIntent)
 					}
-
-					Spacer(modifier = Modifier.width(8.dp))
-
-					Button(
-						onClick = { onFactAction(NextRandomFactIntent) },
-						enabled = !state.isLoading,
-						contentPadding = PaddingValues(
-							end = 16.dp,
-							start = 24.dp
-						)
-					) {
-						Text(text = stringResource(id = R.string.next_fact))
-						Spacer(modifier = Modifier.width(8.dp))
-						Icon(
-							painter = painterResource(id = R.drawable.next),
-							contentDescription = null
-						)
-					}
-				}
+				)
 			}
 		}
 	}
@@ -192,7 +222,9 @@ private fun PreviewRandomFactContent() {
 							"Experts think cats either use the angle of the sunlight to find their way " +
 							"or that cats have magnetized cells in their brains that act as compasses.",
 					isFavourite = false
-				)
+				),
+				isLoading = true,
+				isNoConnection = true
 			),
 			onScreenAction = {},
 			onFactAction = {}

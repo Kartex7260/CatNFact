@@ -3,6 +3,7 @@ package kanti.catnfact.feat.facts.screens.randomfact
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kanti.catnfact.data.NoConnectionError
 import kanti.catnfact.data.NotFoundError
 import kanti.catnfact.data.model.fact.FactRepository
 import kanti.catnfact.domain.fact.GetInitialRandomFactUseCase
@@ -49,10 +50,25 @@ class RandomFactViewModel @Inject constructor(
 				val fact = factResult.value?.toUiState() ?: FactUiState()
 				if (index == 0) {
 					mState.update {
-						it.copy(fact = fact)
+						it.copy(
+							fact = fact,
+							isNoConnection = factResult.error is NoConnectionError
+						)
 					}
 				} else {
-					mState.value = RandomFactUiState(fact = fact)
+					val isNoConnection = factResult.error is NoConnectionError
+					if (isNoConnection) {
+						mState.update {
+							it.copy(
+								isLoading = false,
+								isNoConnection = true
+							)
+						}
+					} else {
+						mState.value = RandomFactUiState(
+							fact = fact
+						)
+					}
 				}
 			}
 		}
@@ -64,7 +80,10 @@ class RandomFactViewModel @Inject constructor(
 			val randomFactResult = getRandomFactUseCase()
 
 			val fact = randomFactResult.value?.toUiState() ?: FactUiState()
-			mState.value = RandomFactUiState(fact = fact)
+			mState.value = RandomFactUiState(
+				fact = fact,
+				isNoConnection = randomFactResult.error is NoConnectionError
+			)
 		}
 	}
 

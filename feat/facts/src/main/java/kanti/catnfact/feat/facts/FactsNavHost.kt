@@ -23,6 +23,11 @@ fun FactsNavHost(
 				toSettings = toSettings
 			)
 		}
+
+		composable(
+			route = FactsDestinations.FACT_LIST
+		) {
+		}
 	}
 }
 

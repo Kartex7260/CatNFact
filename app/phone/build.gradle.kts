@@ -56,6 +56,8 @@ dependencies {
 	implementation(libs.dagger.hilt.android)
 	kapt(libs.dagger.hilt.android.compiler)
 
+	implementation(project(":data:fact:impl:retrofit"))
+	implementation(project(":data:fact:impl:room"))
 	implementation(project(":data:settings:api"))
 	implementation(project(":data:settings:impl:datastore"))
 	implementation(project(":feat:facts"))

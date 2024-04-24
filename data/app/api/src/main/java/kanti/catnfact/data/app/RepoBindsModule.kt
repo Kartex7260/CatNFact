@@ -8,9 +8,9 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-interface BindsModule {
+interface RepoBindsModule {
 
-	@Singleton
 	@Binds
-	fun bindAppDataStoreDataSource(dataSource: AppDataStoreDataSource): AppDataLocalDataSource
+	@Singleton
+	fun bindAppDataRepositoryImpl(repository: AppDataRepositoryImpl): AppDataRepository
 }

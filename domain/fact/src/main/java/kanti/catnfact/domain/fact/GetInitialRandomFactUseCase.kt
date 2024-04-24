@@ -7,6 +7,7 @@ import kanti.catnfact.data.model.fact.Fact
 import kanti.catnfact.data.model.fact.FactRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
@@ -20,17 +21,17 @@ class GetInitialRandomFactUseCase @Inject constructor(
 ) {
 
 	suspend operator fun invoke(): Flow<DataResult<Fact, DataError>> {
-		return flow {
+		return channelFlow {
 			withContext(Dispatchers.Default) {
 				val localJob = launch {
 					val lastHash = appDataRepository.lastFactHash.first() ?: return@launch
 					val fact = factRepository.getFact(lastHash).value ?: return@launch
-					emit(DataResult.Success(fact))
+					send(DataResult.Success(fact))
 				}
 
 				val randomFact = getRandomFactUseCase()
 				localJob.cancel()
-				emit(randomFact)
+				send(randomFact)
 			}
 		}
 	}

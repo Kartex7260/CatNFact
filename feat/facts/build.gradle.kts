@@ -55,6 +55,7 @@ dependencies {
 
 	implementation(project(":data"))
 	implementation(project(":data:fact:api"))
+	implementation(project(":domain:fact"))
 	implementation(project(":ui"))
 	implementation(project(":ui:facts"))
 }

@@ -30,3 +30,16 @@ suspend fun <ValueInput, ValueOutput, Error : DataError> DataResult<ValueInput, 
 	return run(value)
 }
 
+suspend fun <ValueInput, Error : DataError> DataResult<ValueInput, Error>.alsoIfNotError(
+	also: suspend (ValueInput) -> Unit
+) {
+	val error = error
+	if (error != null) {
+		return
+	}
+
+	val value = value ?: return
+
+	also(value)
+}
+

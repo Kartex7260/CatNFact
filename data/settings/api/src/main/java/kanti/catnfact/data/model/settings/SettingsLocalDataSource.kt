@@ -2,9 +2,9 @@ package kanti.catnfact.data.model.settings
 
 import kotlinx.coroutines.flow.Flow
 
-interface SettingsRepository {
+interface SettingsLocalDataSource {
 
-	val settings: Flow<SettingsData>
+	val settingsData: Flow<LocalSettingsData>
 
 	suspend fun setDarkMode(darkMode: DarkMode)
 

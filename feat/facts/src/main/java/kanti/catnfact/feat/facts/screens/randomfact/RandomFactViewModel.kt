@@ -10,13 +10,12 @@ import kanti.catnfact.domain.fact.GetRandomFactUseCase
 import kanti.catnfact.feat.facts.toUiState
 import kanti.catnfact.ui.components.fact.FactUiState
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.channelFlow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectIndexed
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,52 +25,58 @@ class RandomFactViewModel @Inject constructor(
 	private val getInitialRandomFactUseCase: GetInitialRandomFactUseCase
 ) : ViewModel() {
 
-	private val mIntent = MutableStateFlow<RandomFactIntent>(InitialRandomFactIntent)
-	val factUiState: StateFlow<RandomFactUiState> = mIntent
-		.run {
-			channelFlow {
-				collect { intent ->
-					when (intent) {
-						is InitialRandomFactIntent -> initialRandomFact()
-						is NextRandomFactIntent -> nextRandomFact()
-						is ChangeFavouriteIntent -> changeFavourite(intent)
+	private val mState = MutableStateFlow(RandomFactUiState())
+	val factUiState: StateFlow<RandomFactUiState> = mState.asStateFlow()
+
+	init {
+		initialRandomFact()
+	}
+
+	fun onAction(intent: RandomFactIntent) {
+		when (intent) {
+			is NextRandomFactIntent -> nextRandomFact()
+			is ChangeFavouriteIntent -> changeFavourite(intent)
+		}
+	}
+
+	private fun initialRandomFact() {
+		viewModelScope.launch(Dispatchers.Default) {
+			mState.update {
+				it.copy(isLoading = true)
+			}
+			val initialFactsFlow = getInitialRandomFactUseCase()
+			initialFactsFlow.collectIndexed { index, factResult ->
+				val fact = factResult.value?.toUiState() ?: FactUiState()
+				if (index == 0) {
+					mState.update {
+						it.copy(fact = fact)
 					}
+				} else {
+					mState.value = RandomFactUiState(fact = fact)
 				}
 			}
 		}
-		.flowOn(Dispatchers.Default)
-		.stateIn(
-			scope = viewModelScope,
-			started = SharingStarted.Eagerly,
-			initialValue = RandomFactUiState()
-		)
-
-	fun onAction(intent: RandomFactIntent) {
-		mIntent.value = intent
 	}
 
-	private suspend fun ProducerScope<RandomFactUiState>.initialRandomFact() {
-		val initialFactsFlow = getInitialRandomFactUseCase()
-		initialFactsFlow.collect {
-			val fact = it.value?.toUiState() ?: FactUiState()
-			send(RandomFactUiState(fact = fact))
+	private  fun nextRandomFact() {
+		viewModelScope.launch(Dispatchers.Default) {
+			mState.update { it.copy(isLoading = true) }
+			val randomFactResult = getRandomFactUseCase()
+
+			val fact = randomFactResult.value?.toUiState() ?: FactUiState()
+			mState.value = RandomFactUiState(fact = fact)
 		}
 	}
 
-	private suspend fun ProducerScope<RandomFactUiState>.nextRandomFact() {
-		val randomFactResult = getRandomFactUseCase()
+	private fun changeFavourite(intent: ChangeFavouriteIntent) {
+		viewModelScope.launch(Dispatchers.Default) {
+			val factResult = factRepository.changeFavourite(intent.hash)
 
-		val fact = randomFactResult.value?.toUiState() ?: FactUiState()
-		send(RandomFactUiState(fact = fact))
-	}
+			if (factResult.error is NotFoundError)
+				onAction(NextRandomFactIntent)
 
-	private suspend fun ProducerScope<RandomFactUiState>.changeFavourite(intent: ChangeFavouriteIntent) {
-		val factResult = factRepository.changeFavourite(intent.hash)
-
-		if (factResult.error is NotFoundError)
-			onAction(NextRandomFactIntent)
-
-		val fact = factResult.value?.toUiState() ?: FactUiState()
-		send(RandomFactUiState(fact = fact))
+			val fact = factResult.value?.toUiState() ?: FactUiState()
+			mState.value = RandomFactUiState(fact = fact)
+		}
 	}
 }

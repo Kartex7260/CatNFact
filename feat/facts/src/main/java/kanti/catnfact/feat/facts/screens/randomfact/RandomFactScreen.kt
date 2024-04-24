@@ -136,7 +136,8 @@ fun RandomFactContent(
 			) {
 				IconButton(
 					onClick = { onFactAction(ChangeFavouriteIntent(state.fact.hash))  },
-					colors = IconButtonDefaults.filledTonalIconButtonColors()
+					colors = IconButtonDefaults.filledTonalIconButtonColors(),
+					enabled = !state.isLoading
 				) {
 					val painter = if (state.fact.isFavourite)
 						painterResource(id = R.drawable.round_star_24)
@@ -160,6 +161,7 @@ fun RandomFactContent(
 
 					Button(
 						onClick = { onFactAction(NextRandomFactIntent) },
+						enabled = !state.isLoading,
 						contentPadding = PaddingValues(
 							end = 16.dp,
 							start = 24.dp

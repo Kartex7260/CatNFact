@@ -11,6 +11,7 @@ retrofit = "2.11.0"
 ksp = "1.9.23-1.0.20"
 room = "2.6.1"
 datastore = "1.1.0"
+androidx-annotation = "1.7.1"
 
 [libraries]
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
@@ -27,6 +28,7 @@ retrofit-gson = { group = "com.squareup.retrofit2", name = "converter-gson", ver
 androidx-room-runtime = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 androidx-datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
+androidx-annotation = { group = "androidx.annotation", name = "annotation-jvm", version.ref = "androidx-annotation" }
 
 [bundles]
 retrofit = [ "retrofit", "retrofit-gson" ]

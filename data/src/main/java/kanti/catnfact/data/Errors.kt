@@ -10,3 +10,8 @@ data class ValueIsNullError(
 	override val message: String? = null,
 	override val throwable: Throwable? = null
 ) : DataError, LocalError, RemoteError
+
+data class UnexpectedError(
+	override val message: String? = null,
+	override val throwable: Throwable? = null
+) : DataError, LocalError, RemoteError

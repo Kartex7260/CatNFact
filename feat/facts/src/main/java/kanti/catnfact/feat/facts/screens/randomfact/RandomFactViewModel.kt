@@ -14,7 +14,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectIndexed
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -42,39 +44,24 @@ class RandomFactViewModel @Inject constructor(
 
 	private fun initialRandomFact() {
 		viewModelScope.launch(Dispatchers.Default) {
-			mState.update {
-				it.copy(isLoading = true)
-			}
+			mState.update { it.copy(isLoading = true) }
 			val initialFactsFlow = getInitialRandomFactUseCase()
-			initialFactsFlow.collectIndexed { index, factResult ->
-				val fact = factResult.value?.toUiState() ?: FactUiState()
-				if (index == 0) {
-					mState.update {
-						it.copy(
-							fact = fact,
+			initialFactsFlow
+				.onEach { factResult ->
+					mState.update { state ->
+						val newFact = factResult.value?.toUiState() ?: state.fact
+						state.copy(
+							fact = newFact,
 							isNoConnection = factResult.error is NoConnectionError
 						)
 					}
-				} else {
-					val isNoConnection = factResult.error is NoConnectionError
-					if (isNoConnection) {
-						mState.update {
-							it.copy(
-								isLoading = false,
-								isNoConnection = true
-							)
-						}
-					} else {
-						mState.value = RandomFactUiState(
-							fact = fact
-						)
-					}
 				}
-			}
+				.onCompletion { mState.update { it.copy(isLoading = false) } }
+				.collect()
 		}
 	}
 
-	private  fun nextRandomFact() {
+	private fun nextRandomFact() {
 		viewModelScope.launch(Dispatchers.Default) {
 			mState.update { it.copy(isLoading = true) }
 			val randomFactResult = getRandomFactUseCase()

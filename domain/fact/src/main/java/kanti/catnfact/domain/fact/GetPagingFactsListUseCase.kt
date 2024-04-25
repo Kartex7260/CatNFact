@@ -34,9 +34,12 @@ class GetPagingFactsListUseCase @Inject constructor(
 		return withContext(Dispatchers.Default) {
 			if (dataError != null)
 				DataResult.Error(dataError!!)
-			else if (hashes != null)
-				DataResult.Success(factRepository.getLocalFacts(hashes = hashes!!))
-			else
+			else if (hashes != null) {
+				val facts = factRepository.getLocalFacts(hashes = hashes!!)
+				DataResult.Success(
+					hashes?.map { hash -> facts.first { it.hash == hash } } ?: facts
+				)
+			} else
 				DataResult.Error(ValueIsNullError())
 		}
 	}

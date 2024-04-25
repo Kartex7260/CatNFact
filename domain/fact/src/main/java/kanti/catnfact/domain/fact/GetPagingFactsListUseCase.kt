@@ -75,12 +75,8 @@ class GetPagingFactsListUseCase @Inject constructor(
 			if (remoteResult.value?.size == 0)
 				mIsLast.value = true
 			mutex.withLock {
-				currentPage++
-
 				if (isLocalData) {
 					hashes = remoteResult.value?.toMutableList() ?: hashes
-					if (remoteResult.value != null)
-						isLocalData = false
 				} else {
 					if (hashes != null) {
 						remoteResult.value?.let {
@@ -88,6 +84,11 @@ class GetPagingFactsListUseCase @Inject constructor(
 						}
 					} else
 						hashes = remoteResult.value?.toMutableList() ?: hashes
+				}
+
+				if (remoteResult.value != null) {
+					isLocalData = false
+					currentPage++
 				}
 
 				dataError = remoteResult.error

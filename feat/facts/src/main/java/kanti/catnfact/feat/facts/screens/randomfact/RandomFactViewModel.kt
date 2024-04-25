@@ -37,8 +37,8 @@ class RandomFactViewModel @Inject constructor(
 
 	fun onAction(intent: RandomFactIntent) {
 		when (intent) {
-			is NextRandomFactIntent -> nextRandomFact()
-			is ChangeFavouriteIntent -> changeFavourite(intent)
+			is OnNextRandomFactIntent -> onNextRandomFact()
+			is OnChangeFavouriteIntent -> onChangeFavourite(intent)
 		}
 	}
 
@@ -61,7 +61,7 @@ class RandomFactViewModel @Inject constructor(
 		}
 	}
 
-	private fun nextRandomFact() {
+	private fun onNextRandomFact() {
 		viewModelScope.launch(Dispatchers.Default) {
 			mState.update { it.copy(isLoading = true) }
 			val randomFactResult = getRandomFactUseCase()
@@ -74,12 +74,12 @@ class RandomFactViewModel @Inject constructor(
 		}
 	}
 
-	private fun changeFavourite(intent: ChangeFavouriteIntent) {
+	private fun onChangeFavourite(intent: OnChangeFavouriteIntent) {
 		viewModelScope.launch(Dispatchers.Default) {
 			val factResult = factRepository.changeFavourite(intent.hash)
 
 			if (factResult.error is NotFoundError)
-				onAction(NextRandomFactIntent)
+				onAction(OnNextRandomFactIntent)
 
 			val fact = factResult.value?.toUiState() ?: FactUiState()
 			mState.value = RandomFactUiState(fact = fact)

@@ -40,9 +40,9 @@ class FactsListViewModel @Inject constructor(
 	fun onFactAction(intent: FactIntent) {
 		when (intent) {
 			is OnChangeExpandIntent -> onChangeExpand(intent)
-			is ChangeFavouriteIntent -> onChangeFavourite(intent)
-			is RefreshIntent -> onAppendContent()
-			is AppendContentIntent -> onAppendContent()
+			is OnChangeFavouriteIntent -> onChangeFavourite(intent)
+			is OnRefreshIntent -> onRefresh()
+			is OnAppendContentIntent -> onAppendContent()
 		}
 	}
 
@@ -59,9 +59,17 @@ class FactsListViewModel @Inject constructor(
 		}
 	}
 
-	private fun onChangeFavourite(intent: ChangeFavouriteIntent) {
+	private fun onChangeFavourite(intent: OnChangeFavouriteIntent) {
 		viewModelScope.launch(Dispatchers.Default) {
 			factRepository.changeFavourite(intent.hash)
+			showDataFromUseCase()
+		}
+	}
+
+	private fun onRefresh() {
+		viewModelScope.launch(Dispatchers.Default) {
+			mState.update { it.copy(isLoading = true) }
+			getPagingFactsListUseCase.load()
 			showDataFromUseCase()
 		}
 	}

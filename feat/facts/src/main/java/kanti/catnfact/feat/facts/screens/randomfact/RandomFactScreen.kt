@@ -43,6 +43,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LifecycleStartEffect
 import kanti.catnfact.feat.facts.R
 import kanti.catnfact.ui.components.error.ErrorPanel
 import kanti.catnfact.ui.components.error.ErrorState
@@ -56,6 +57,12 @@ fun RandomFactScreen(
 ) {
 	val viewModel = hiltViewModel<RandomFactViewModel>()
 	val state by viewModel.factUiState.collectAsState()
+
+	LifecycleStartEffect(viewModel) {
+		if (state.isNoConnection)
+			viewModel.onAction(OnNextRandomFactIntent)
+		onStopOrDispose {  }
+	}
 
 	RandomFactContent(
 		state = state,
@@ -143,7 +150,7 @@ fun RandomFactContent(
 					modifier = Modifier.fillMaxWidth()
 				) {
 					IconButton(
-						onClick = { onFactAction(ChangeFavouriteIntent(state.fact.hash))  },
+						onClick = { onFactAction(OnChangeFavouriteIntent(state.fact.hash))  },
 						colors = IconButtonDefaults.filledTonalIconButtonColors(),
 						enabled = !state.isLoading && !state.isNoConnection
 					) {
@@ -168,7 +175,7 @@ fun RandomFactContent(
 						Spacer(modifier = Modifier.width(8.dp))
 
 						Button(
-							onClick = { onFactAction(NextRandomFactIntent) },
+							onClick = { onFactAction(OnNextRandomFactIntent) },
 							enabled = !state.isLoading && !state.isNoConnection,
 							contentPadding = PaddingValues(
 								end = 16.dp,
@@ -198,7 +205,7 @@ fun RandomFactContent(
 						callbackLabel = stringResource(id = R.string.refresh)
 					),
 					onCallback =  {
-						onFactAction(NextRandomFactIntent)
+						onFactAction(OnNextRandomFactIntent)
 					}
 				)
 			}

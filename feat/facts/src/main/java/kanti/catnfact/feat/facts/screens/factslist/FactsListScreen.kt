@@ -36,6 +36,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LifecycleStartEffect
 import kanti.catnfact.feat.facts.R
 import kanti.catnfact.ui.components.error.ErrorPanel
 import kanti.catnfact.ui.components.error.ErrorState
@@ -49,10 +50,16 @@ fun FactsListScreen(
 	toSettings: () -> Unit = {}
 ) {
 	val viewModel = hiltViewModel<FactsListViewModel>()
-	val uiState by viewModel.factsListUiState.collectAsState()
+	val state by viewModel.factsListUiState.collectAsState()
+
+	LifecycleStartEffect(viewModel) {
+		if (state.isNoConnection)
+			viewModel.onFactAction(OnRefreshIntent)
+		onStopOrDispose {  }
+	}
 
 	FactsListContent(
-		state = uiState,
+		state = state,
 		onScreenAction = { intent ->
 			when (intent) {
 				is OnBackIntent -> onBack()
@@ -130,11 +137,11 @@ fun FactsListContent(
 						modifier = Modifier.animateItemPlacement(),
 						state = factUiState,
 						onChangeExpand = { onFactAction(OnChangeExpandIntent(factUiState.hash)) },
-						onChangeFavourite = { onFactAction(ChangeFavouriteIntent(factUiState.hash)) }
+						onChangeFavourite = { onFactAction(OnChangeFavouriteIntent(factUiState.hash)) }
 					)
 
 					if (index == state.facts.size - 1) {
-						onFactAction(AppendContentIntent)
+						onFactAction(OnAppendContentIntent)
 					}
 				}
 
@@ -165,7 +172,7 @@ fun FactsListContent(
 						title = stringResource(id = R.string.no_connection),
 						callbackLabel = stringResource(id = R.string.refresh)
 					),
-					onCallback = { onFactAction(RefreshIntent) }
+					onCallback = { onFactAction(OnRefreshIntent) }
 				)
 			}
 		}

@@ -9,6 +9,6 @@ internal data object ToSettingsIntent : FactScreenIntent
 
 sealed interface RandomFactIntent
 
-internal data class ChangeFavouriteIntent(val hash: String) : RandomFactIntent
+internal data class OnChangeFavouriteIntent(val hash: String) : RandomFactIntent
 
-internal data object NextRandomFactIntent : RandomFactIntent
+internal data object OnNextRandomFactIntent : RandomFactIntent

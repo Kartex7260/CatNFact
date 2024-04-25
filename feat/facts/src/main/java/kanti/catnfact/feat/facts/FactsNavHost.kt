@@ -20,7 +20,8 @@ fun FactsNavHost(
 			route = FactsDestinations.RANDOM_FACT
 		) {
 			RandomFactScreen(
-				toSettings = toSettings
+				toSettings = toSettings,
+				toFactList = { navController.navigate(route = FactsDestinations.FACT_LIST) }
 			)
 		}
 

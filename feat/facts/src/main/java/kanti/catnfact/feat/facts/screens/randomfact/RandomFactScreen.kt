@@ -43,9 +43,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import kanti.catnfact.feat.facts.FactsDestinations
 import kanti.catnfact.feat.facts.R
 import kanti.catnfact.ui.components.error.ErrorPanel
 import kanti.catnfact.ui.components.error.ErrorState
@@ -55,7 +52,7 @@ import kanti.catnfact.ui.theme.CatNFactTheme
 @Composable
 fun RandomFactScreen(
 	toSettings: () -> Unit = {},
-	navController: NavController = rememberNavController()
+	toFactList: () -> Unit = {}
 ) {
 	val viewModel = hiltViewModel<RandomFactViewModel>()
 	val state by viewModel.factUiState.collectAsState()
@@ -65,9 +62,7 @@ fun RandomFactScreen(
 		onScreenAction = { intent ->
 			when (intent) {
 				is ToSettingsIntent -> toSettings()
-				is ToFactListIntent -> {
-					navController.navigate(route = FactsDestinations.FACT_LIST)
-				}
+				is ToFactListIntent -> toFactList()
 			}
 		},
 		onFactAction = { intent ->

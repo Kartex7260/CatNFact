@@ -52,16 +52,18 @@ fun MainFeatures(
 		}
 		NavigationBar {
 			navItems.forEach {
-				val currentDestination by navController.currentBackStackEntryAsState()
+				val currentNavBackStackEntry by navController.currentBackStackEntryAsState()
 
 				NavigationBarItem(
-					selected = currentDestination?.destination?.route == it.route,
+					selected = currentNavBackStackEntry?.destination?.route == it.route,
 					onClick = {
+						navController.navigateUp()
 						navController.navigate(route = it.route) {
 							popUpTo(route = it.route) {
-								inclusive = true
+								inclusive = false
 								saveState = true
 							}
+							launchSingleTop = true
 						}
 					},
 					icon = {

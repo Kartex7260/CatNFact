@@ -74,12 +74,15 @@ class GetPagingFactsListUseCase @Inject constructor(
 			return
 		withContext(Dispatchers.Default) {
 			val remoteResult = factRepository.loadFacts(page = currentPage, limit = mPageLimit)
-			if (remoteResult.value?.size == 0)
+			if (remoteResult.value?.size == 0) {
 				mIsLast.value = true
+				return@withContext
+			}
 			mutex.withLock {
 				val error = remoteResult.error
+				dataError = error
 				if (error != null) {
-					dataError = error
+					return@withLock
 				}
 
 				val value = remoteResult.value ?: return@withLock
@@ -95,7 +98,6 @@ class GetPagingFactsListUseCase @Inject constructor(
 				}
 
 				currentPage++
-				dataError = null
 			}
 		}
 	}

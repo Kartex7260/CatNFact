@@ -23,7 +23,7 @@ class GetPagingFactsListUseCase @Inject constructor(
 	private var mPageLimit = 25
 	private var currentPage = 1
 
-	private var isLocalData: Boolean = false
+	private var isLocalHashes: Boolean = false
 	private var hashes: MutableList<String>? = null
 	private var dataError: DataError? = null
 
@@ -32,21 +32,23 @@ class GetPagingFactsListUseCase @Inject constructor(
 
 	suspend operator fun invoke(): DataResult<List<Fact>, DataError> {
 		return withContext(Dispatchers.Default) {
-			if (dataError != null) {
-				DataResult.Error(
-					error = dataError!!,
-					value = hashes?.let { hashes ->
-						val facts = factRepository.getLocalFacts(hashes)
-						hashes.map { hash -> facts.first { it.hash == hash } }
-					}
-				)
-			} else if (hashes != null) {
-				val facts = factRepository.getLocalFacts(hashes = hashes!!)
-				DataResult.Success(
-					hashes?.map { hash -> facts.first { it.hash == hash } } ?: facts
-				)
-			} else
-				DataResult.Error(ValueIsNullError())
+			mutex.withLock {
+				if (dataError != null) {
+					DataResult.Error(
+						error = dataError!!,
+						value = hashes?.let { hashes ->
+							val facts = factRepository.getLocalFacts(hashes)
+							hashes.map { hash -> facts.first { it.hash == hash } }
+						}
+					)
+				} else if (hashes != null) {
+					val facts = factRepository.getLocalFacts(hashes = hashes!!)
+					DataResult.Success(
+						hashes?.map { hash -> facts.first { it.hash == hash } } ?: facts
+					)
+				} else
+					DataResult.Error(ValueIsNullError())
+			}
 		}
 	}
 
@@ -58,7 +60,7 @@ class GetPagingFactsListUseCase @Inject constructor(
 			mutex.withLock {
 				currentPage = 1
 
-				isLocalData = true
+				isLocalHashes = true
 				hashes = localData.toMutableList()
 				dataError = null
 
@@ -75,23 +77,25 @@ class GetPagingFactsListUseCase @Inject constructor(
 			if (remoteResult.value?.size == 0)
 				mIsLast.value = true
 			mutex.withLock {
-				if (isLocalData) {
-					hashes = remoteResult.value?.toMutableList() ?: hashes
+				val error = remoteResult.error
+				if (error != null) {
+					dataError = error
+				}
+
+				val value = remoteResult.value ?: return@withLock
+
+				if (isLocalHashes) {
+					hashes = value.toMutableList()
+					isLocalHashes = false
 				} else {
 					if (hashes != null) {
-						remoteResult.value?.let {
-							hashes!!.addAll(it)
-						}
+						hashes!!.addAll(value)
 					} else
-						hashes = remoteResult.value?.toMutableList() ?: hashes
+						hashes = value.toMutableList()
 				}
 
-				if (remoteResult.value != null) {
-					isLocalData = false
-					currentPage++
-				}
-
-				dataError = remoteResult.error
+				currentPage++
+				dataError = null
 			}
 		}
 	}

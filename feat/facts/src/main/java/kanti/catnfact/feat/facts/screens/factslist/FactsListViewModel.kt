@@ -77,6 +77,7 @@ class FactsListViewModel @Inject constructor(
 		viewModelScope.launch(Dispatchers.Default) {
 			mState.update { it.copy(isLoading = true) }
 
+			getPagingFactsListUseCase.setPageSize(25)
 			getPagingFactsListUseCase.loadLocal()
 			val local = getPagingFactsListUseCase().value ?: listOf()
 			mState.update { state ->

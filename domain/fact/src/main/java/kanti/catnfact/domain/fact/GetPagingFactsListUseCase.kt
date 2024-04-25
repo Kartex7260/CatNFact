@@ -2,25 +2,86 @@ package kanti.catnfact.domain.fact
 
 import kanti.catnfact.data.DataError
 import kanti.catnfact.data.DataResult
+import kanti.catnfact.data.ValueIsNullError
 import kanti.catnfact.data.model.fact.Fact
 import kanti.catnfact.data.model.fact.FactRepository
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class GetPagingFactsListUseCase @Inject constructor(
 	private val factRepository: FactRepository
 ) {
 
-	private val mIsLast = MutableSharedFlow<Any>()
-	val isLast: SharedFlow<Any> = mIsLast.asSharedFlow()
+	private val mutex = Mutex()
+
+	private var mPageLimit = 25
+	private var currentPage = 1
+
+	private var isLocalData: Boolean = false
+	private var hashes: MutableList<String>? = null
+	private var dataError: DataError? = null
+
+	private val mIsLast = MutableStateFlow(false)
+	val isLast: StateFlow<Any> = mIsLast.asStateFlow()
 
 	suspend operator fun invoke(): DataResult<List<Fact>, DataError> {
-		TODO("Реализовать")
+		return withContext(Dispatchers.Default) {
+			if (dataError != null)
+				DataResult.Error(dataError!!)
+			else if (hashes != null)
+				DataResult.Success(factRepository.getLocalFacts(hashes = hashes!!))
+			else
+				DataResult.Error(ValueIsNullError())
+		}
 	}
 
-	suspend fun loadLocal() {}
+	suspend fun setPageSize(limit: Int) { mutex.withLock { mPageLimit = limit } }
 
-	suspend fun load() {}
+	suspend fun loadLocal() {
+		withContext(Dispatchers.Default) {
+			val localData = factRepository.getLocalFactsHashes(limit = mPageLimit)
+			mutex.withLock {
+				currentPage = 1
+
+				isLocalData = true
+				hashes = localData.toMutableList()
+				dataError = null
+
+				mIsLast.value = false
+			}
+		}
+	}
+
+	suspend fun load() {
+		if (mIsLast.value)
+			return
+		withContext(Dispatchers.Default) {
+			val remoteResult = factRepository.loadFacts(page = currentPage, limit = mPageLimit)
+			if (remoteResult.value?.size == 0)
+				mIsLast.value = true
+			mutex.withLock {
+				currentPage++
+
+				if (isLocalData) {
+					hashes = remoteResult.value?.toMutableList()
+					isLocalData = false
+				} else {
+					if (hashes != null) {
+						remoteResult.value?.let {
+							hashes!!.addAll(it)
+						}
+					} else
+						hashes = remoteResult.value?.toMutableList()
+				}
+
+				dataError = remoteResult.error
+			}
+		}
+	}
 }

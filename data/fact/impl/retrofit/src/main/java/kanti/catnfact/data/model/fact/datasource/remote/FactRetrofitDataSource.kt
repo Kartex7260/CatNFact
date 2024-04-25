@@ -33,4 +33,18 @@ class FactRetrofitDataSource @Inject constructor(
 			}
 		}
 	}
+
+	@RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
+	override suspend fun getFactsList(page: Int, limit: Int): DataResult<List<Fact>, RemoteError> {
+		return withContext(Dispatchers.Default) {
+			try {
+				val remoteFacts = factService.getFactsList(page = page, limit = limit)
+				DataResult.Success(remoteFacts.data.map { it.toFact(digest) })
+			} catch (ex: IOException) {
+				DataResult.Error(NoConnectionError(ex.message, ex))
+			} catch (ex: HttpException) {
+				DataResult.Error(UnexpectedError(ex.message, ex))
+			}
+		}
+	}
 }

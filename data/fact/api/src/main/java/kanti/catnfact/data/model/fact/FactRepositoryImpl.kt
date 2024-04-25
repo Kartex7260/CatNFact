@@ -41,4 +41,22 @@ class FactRepositoryImpl @Inject constructor(
 			}
 		}
 	}
+
+	override suspend fun getLocalFactsHashes(limit: Int): List<String> {
+		return localDataSource.getFactsHashes(limit = limit)
+	}
+
+	override suspend fun getLocalFacts(hashes: List<String>): List<Fact> {
+		return localDataSource.getFacts(hashes = hashes)
+	}
+
+	override suspend fun loadFacts(page: Int, limit: Int): DataResult<List<String>, DataError> {
+		return withContext(Dispatchers.Default) {
+			val remoteResult = remoteDataSource.getFactsList(page = page, limit = limit)
+			remoteResult.runIfNotError { facts ->
+				facts.forEach { localDataSource.insert(it) }
+				DataResult.Success(value = facts.map { it.hash })
+			}
+		}
+	}
 }

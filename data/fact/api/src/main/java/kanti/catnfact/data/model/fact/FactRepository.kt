@@ -3,7 +3,6 @@ package kanti.catnfact.data.model.fact
 import kanti.catnfact.data.DataError
 import kanti.catnfact.data.DataResult
 import kanti.catnfact.data.LocalError
-import kanti.catnfact.data.RemoteError
 
 interface FactRepository {
 
@@ -18,5 +17,5 @@ interface FactRepository {
 
 	suspend fun getLocalFacts(hashes: List<String>): List<Fact>
 
-	suspend fun loadFacts(page: Int, limit: Int): DataResult<List<String>, RemoteError>
+	suspend fun loadFacts(page: Int, limit: Int): DataResult<List<String>, DataError>
 }

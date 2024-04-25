@@ -13,4 +13,9 @@ interface FactLocalDataSource {
 	suspend fun insert(fact: Fact)
 
 	suspend fun changeFavourite(hash: String)
+
+
+	suspend fun getFactsHashes(limit: Int): List<String>
+
+	suspend fun getFacts(hashes: List<String>): List<Fact>
 }

@@ -1,5 +1,10 @@
 package kanti.catnfact.feat.facts.screens.factslist
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -165,19 +170,27 @@ fun FactsListContent(
 				}
 			}
 
-			if (state.isLoading) {
-				CircularProgressIndicator(
-					modifier = Modifier.align(Alignment.Center)
-				)
+			AnimatedVisibility(
+				modifier = Modifier.align(Alignment.Center),
+				visible = state.isLoading,
+				enter = fadeIn(),
+				exit = fadeOut()
+			) {
+				CircularProgressIndicator()
 			}
 
-			if (state.isNoConnection) {
+			AnimatedVisibility(
+				modifier = Modifier.align(Alignment.BottomCenter),
+				visible = state.isNoConnection,
+				enter = slideInVertically { it },
+				exit = slideOutVertically { it }
+			) {
 				ErrorPanel(
-					modifier = Modifier.align(Alignment.BottomCenter),
 					state = ErrorState(
 						title = stringResource(id = R.string.no_connection),
 						callbackLabel = stringResource(id = R.string.refresh)
 					),
+					enabledCallback = !state.isLoading,
 					onCallback = { onFactAction(OnRefreshIntent) }
 				)
 			}

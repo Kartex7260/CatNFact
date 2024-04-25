@@ -9,7 +9,6 @@ import kanti.catnfact.data.model.fact.FactRepository
 import kanti.catnfact.domain.fact.GetInitialRandomFactUseCase
 import kanti.catnfact.domain.fact.GetRandomFactUseCase
 import kanti.catnfact.feat.facts.toUiState
-import kanti.catnfact.ui.components.fact.FactUiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -66,11 +65,14 @@ class RandomFactViewModel @Inject constructor(
 			mState.update { it.copy(isLoading = true) }
 			val randomFactResult = getRandomFactUseCase()
 
-			val fact = randomFactResult.value?.toUiState() ?: FactUiState()
-			mState.value = RandomFactUiState(
-				fact = fact,
-				isNoConnection = randomFactResult.error is NoConnectionError
-			)
+			val fact = randomFactResult.value?.toUiState()
+			mState.update { state ->
+				state.copy(
+					fact = fact ?: state.fact,
+					isLoading = false,
+					isNoConnection = randomFactResult.error is NoConnectionError
+				)
+			}
 		}
 	}
 
@@ -81,8 +83,12 @@ class RandomFactViewModel @Inject constructor(
 			if (factResult.error is NotFoundError)
 				onAction(OnNextRandomFactIntent)
 
-			val fact = factResult.value?.toUiState() ?: FactUiState()
-			mState.value = RandomFactUiState(fact = fact)
+			val fact = factResult.value?.toUiState()
+			mState.update { state ->
+				state.copy(
+					fact = fact ?: state.fact
+				)
+			}
 		}
 	}
 }

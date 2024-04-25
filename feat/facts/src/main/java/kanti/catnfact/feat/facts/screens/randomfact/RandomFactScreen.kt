@@ -1,6 +1,8 @@
 package kanti.catnfact.feat.facts.screens.randomfact
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Arrangement
@@ -140,10 +142,13 @@ fun RandomFactContent(
 						text = state.fact.fact,
 						style = MaterialTheme.typography.headlineMedium
 					)
-					if (state.isLoading) {
-						CircularProgressIndicator(
-							modifier = Modifier.align(Alignment.Center)
-						)
+					androidx.compose.animation.AnimatedVisibility(
+						modifier = Modifier.align(Alignment.Center),
+						visible = state.isLoading,
+						enter = fadeIn(),
+						exit = fadeOut()
+					) {
+						CircularProgressIndicator()
 					}
 				}
 
@@ -207,6 +212,7 @@ fun RandomFactContent(
 						title = stringResource(id = R.string.no_connection),
 						callbackLabel = stringResource(id = R.string.refresh)
 					),
+					enabledCallback = !state.isLoading,
 					onCallback =  {
 						onFactAction(OnNextRandomFactIntent)
 					}

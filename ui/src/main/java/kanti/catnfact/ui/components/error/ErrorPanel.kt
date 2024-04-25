@@ -26,6 +26,7 @@ import kanti.catnfact.ui.theme.CatNFactTheme
 fun ErrorPanel(
 	modifier: Modifier = Modifier,
 	state: ErrorState,
+	enabledCallback: Boolean = true,
 	onCallback: () -> Unit = {}
 ) = Box(
 	modifier = Modifier
@@ -66,6 +67,7 @@ fun ErrorPanel(
 				containerColor = MaterialTheme.colorScheme.errorContainer,
 				contentColor = MaterialTheme.colorScheme.onErrorContainer
 			),
+			enabled = enabledCallback,
 			onClick = onCallback
 		) {
 			Text(text = state.callbackLabel)

@@ -6,5 +6,6 @@ import androidx.compose.runtime.Immutable
 data class FactUiState(
 	val hash: String = "",
 	val fact: String = "",
-	val isFavourite: Boolean = false
+	val isFavourite: Boolean = false,
+	val isExpand: Boolean = false
 )

@@ -3,11 +3,11 @@ package kanti.catnfact.ui.components.fact
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -16,8 +16,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -43,12 +50,24 @@ fun FactCard(
 		label = "elevation"
 	)
 
+	var enabledClick by remember { mutableStateOf(false) }
+
 	Card(
 		modifier = Modifier
+			.shadow(
+				elevation = elevationAnimate,
+				shape = CardDefaults.shape
+			)
+			.clip(CardDefaults.shape)
+			.clickable(
+				interactionSource = remember { MutableInteractionSource() },
+				indication = rememberRipple(),
+				role = Role.Switch,
+				enabled = enabledClick,
+				onClick = { onChangeExpand(!state.isExpand) }
+			)
 			.then(modifier),
-		colors = CardDefaults.cardColors(containerColor = containerColorAnimate),
-		elevation = CardDefaults.cardElevation(defaultElevation = elevationAnimate),
-		onClick = { onChangeExpand(!state.isExpand) }
+		colors = CardDefaults.cardColors(containerColor = containerColorAnimate)
 	) {
 		Row(
 			modifier = Modifier
@@ -59,34 +78,19 @@ fun FactCard(
 					end = 4.dp
 				)
 		) {
-			Box(
+			Text(
 				modifier = Modifier
 					.weight(1f)
 					.animateContentSize()
-			) {
-				androidx.compose.animation.AnimatedVisibility(
-					visible = state.isExpand,
-					enter = fadeIn(),
-					exit = fadeOut()
-				) {
-					Text(
-						text = state.fact,
-						style = MaterialTheme.typography.bodyLarge
-					)
+					.align(Alignment.CenterVertically),
+				text = state.fact,
+				style = MaterialTheme.typography.bodyLarge,
+				maxLines = if (state.isExpand) Int.MAX_VALUE else 2,
+				overflow = TextOverflow.Ellipsis,
+				onTextLayout = { layoutResult ->
+					enabledClick = layoutResult.hasVisualOverflow || layoutResult.lineCount > 2
 				}
-				androidx.compose.animation.AnimatedVisibility(
-					visible = !state.isExpand,
-					enter = fadeIn(),
-					exit = fadeOut()
-				) {
-					Text(
-						text = state.fact,
-						style = MaterialTheme.typography.bodyLarge,
-						maxLines = 2,
-						overflow = TextOverflow.Ellipsis
-					)
-				}
-			}
+			)
 
 
 			IconButton(
@@ -107,18 +111,26 @@ fun FactCard(
 @PreviewLightDark
 @Composable
 private fun PreviewFactCard(
-	@PreviewParameter(IsFavourite::class) isFavourite: Boolean
+	@PreviewParameter(Facts::class) fact: String
 ) {
+	var isExpand by remember { mutableStateOf(false) }
 	CatNFactTheme {
 		FactCard(
 			state = FactUiState(
-				fact = "The cat who holds the record for the longest non-fatal fall is Andy. " +
-						"He fell from the 16th floor of an apartment building " +
-						"(about 200 ft/.06 km) and survived.",
-				isFavourite = isFavourite
-			)
+				fact = fact,
+				isFavourite = false,
+				isExpand = isExpand
+			),
+			onChangeExpand = { isExpand = it }
 		)
 	}
 }
 
-class IsFavourite : CollectionPreviewParameterProvider<Boolean>(listOf(false, true))
+class Facts : CollectionPreviewParameterProvider<String>(
+	listOf(
+		"Small fact",
+		"The cat who holds the record for the longest non-fatal fall is Andy. " +
+				"He fell from the 16th floor of an apartment building " +
+				"(about 200 ft/.06 km) and survived."
+	)
+)

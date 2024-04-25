@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
 	alias(libs.plugins.androidApplication)
 	alias(libs.plugins.jetbrainsKotlinAndroid)
@@ -8,6 +10,20 @@ plugins {
 android {
 	namespace = "kanti.catnfact"
 	compileSdk = 34
+
+	val signingProperties: String by project
+	val file = file(signingProperties)
+	val keyStoreProps = Properties()
+	keyStoreProps.load(file.inputStream())
+
+	signingConfigs {
+		create("release") {
+			storeFile = file(keyStoreProps["FILE"] as String)
+			storePassword = keyStoreProps["PASSWORD"] as String
+			keyAlias = keyStoreProps["ALIAS"] as String
+			keyPassword = keyStoreProps["ALIAS_PASSWORD"] as String
+		}
+	}
 
 	defaultConfig {
 		applicationId = "kanti.catnfact"
@@ -21,6 +37,7 @@ android {
 
 	buildTypes {
 		release {
+			signingConfig = signingConfigs["release"]
 			isMinifyEnabled = false
 			proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
 		}

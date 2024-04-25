@@ -32,9 +32,15 @@ class GetPagingFactsListUseCase @Inject constructor(
 
 	suspend operator fun invoke(): DataResult<List<Fact>, DataError> {
 		return withContext(Dispatchers.Default) {
-			if (dataError != null)
-				DataResult.Error(dataError!!)
-			else if (hashes != null) {
+			if (dataError != null) {
+				DataResult.Error(
+					error = dataError!!,
+					value = hashes?.let { hashes ->
+						val facts = factRepository.getLocalFacts(hashes)
+						hashes.map { hash -> facts.first { it.hash == hash } }
+					}
+				)
+			} else if (hashes != null) {
 				val facts = factRepository.getLocalFacts(hashes = hashes!!)
 				DataResult.Success(
 					hashes?.map { hash -> facts.first { it.hash == hash } } ?: facts
@@ -72,15 +78,16 @@ class GetPagingFactsListUseCase @Inject constructor(
 				currentPage++
 
 				if (isLocalData) {
-					hashes = remoteResult.value?.toMutableList()
-					isLocalData = false
+					hashes = remoteResult.value?.toMutableList() ?: hashes
+					if (remoteResult.value != null)
+						isLocalData = false
 				} else {
 					if (hashes != null) {
 						remoteResult.value?.let {
 							hashes!!.addAll(it)
 						}
 					} else
-						hashes = remoteResult.value?.toMutableList()
+						hashes = remoteResult.value?.toMutableList() ?: hashes
 				}
 
 				dataError = remoteResult.error

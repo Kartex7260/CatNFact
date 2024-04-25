@@ -9,6 +9,6 @@ class ExpanderManager {
 	}
 
 	fun expand(hash: String?) {
-		currentHash = hash
+		currentHash = if (currentHash == hash) null else hash
 	}
 }

@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import kanti.catnfact.feat.facts.screens.factslist.FactsListScreen
 import kanti.catnfact.feat.facts.screens.randomfact.RandomFactScreen
 
 @Composable
@@ -21,13 +22,17 @@ fun FactsNavHost(
 		) {
 			RandomFactScreen(
 				toSettings = toSettings,
-				toFactList = { navController.navigate(route = FactsDestinations.FACT_LIST) }
+				toFactList = { navController.navigate(route = FactsDestinations.FACTS_LIST) }
 			)
 		}
 
 		composable(
-			route = FactsDestinations.FACT_LIST
+			route = FactsDestinations.FACTS_LIST
 		) {
+			FactsListScreen(
+				onBack = { navController.popBackStack() },
+				toSettings = toSettings
+			)
 		}
 	}
 }
@@ -35,5 +40,5 @@ fun FactsNavHost(
 object FactsDestinations {
 
 	const val RANDOM_FACT = "random_fact"
-	const val FACT_LIST = "fact_list"
+	const val FACTS_LIST = "fact_list"
 }

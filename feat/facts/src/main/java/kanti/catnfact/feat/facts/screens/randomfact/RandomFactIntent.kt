@@ -2,13 +2,13 @@ package kanti.catnfact.feat.facts.screens.randomfact
 
 sealed interface FactScreenIntent
 
-data object ToFactListIntent : FactScreenIntent
+internal data object ToFactListIntent : FactScreenIntent
 
-data object ToSettingsIntent : FactScreenIntent
+internal data object ToSettingsIntent : FactScreenIntent
 
 
 sealed interface RandomFactIntent
 
-data class ChangeFavouriteIntent(val hash: String) : RandomFactIntent
+internal data class ChangeFavouriteIntent(val hash: String) : RandomFactIntent
 
-data object NextRandomFactIntent : RandomFactIntent
+internal data object NextRandomFactIntent : RandomFactIntent

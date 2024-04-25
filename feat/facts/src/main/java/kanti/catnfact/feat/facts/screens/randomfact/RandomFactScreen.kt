@@ -79,6 +79,7 @@ fun RandomFactContent(
 	onFactAction: (RandomFactIntent) -> Unit
 ) {
 	Scaffold(
+		modifier = Modifier.fillMaxSize(),
 		topBar = {
 			CenterAlignedTopAppBar(
 				title = { Text(text = stringResource(id = R.string.fact)) },

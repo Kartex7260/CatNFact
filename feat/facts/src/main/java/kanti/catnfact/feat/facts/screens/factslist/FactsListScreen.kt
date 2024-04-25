@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
@@ -26,6 +25,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,6 +36,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import kanti.catnfact.feat.facts.R
 import kanti.catnfact.ui.components.error.ErrorPanel
 import kanti.catnfact.ui.components.error.ErrorState
@@ -48,15 +49,18 @@ fun FactsListScreen(
 	onBack: () -> Unit = {},
 	toSettings: () -> Unit = {}
 ) {
+	val viewModel = hiltViewModel<FactsListViewModel>()
+	val uiState by viewModel.factsListUiState.collectAsState()
+
 	FactsListContent(
-		state = FactsListUiState(),
+		state = uiState,
 		onScreenAction = { intent ->
 			when (intent) {
 				is OnBackIntent -> onBack()
 				is ToSettingsIntent -> toSettings()
 			}
 		},
-		onFactAction = {}
+		onFactAction = viewModel::onFactAction
 	)
 }
 

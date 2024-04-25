@@ -1,6 +1,8 @@
 plugins {
 	alias(libs.plugins.androidLibrary)
 	alias(libs.plugins.jetbrainsKotlinAndroid)
+	alias(libs.plugins.kapt)
+	alias(libs.plugins.dagger.hilt)
 }
 
 android {
@@ -45,6 +47,9 @@ dependencies {
 
 	implementation(libs.compose.ui.tooling.preview)
 	debugImplementation(libs.compose.ui.tooling)
+
+	implementation(libs.dagger.hilt.android)
+	kapt(libs.dagger.hilt.android.compiler)
 
 	implementation(project(":ui"))
 }

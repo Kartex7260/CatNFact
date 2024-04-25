@@ -31,7 +31,7 @@ androidx-datastore = { group = "androidx.datastore", name = "datastore-preferenc
 androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "androidx-annotation" }
 
 [bundles]
-retrofit = [ "retrofit", "retrofit-gson" ]
+retrofit = ["retrofit", "retrofit-gson"]
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

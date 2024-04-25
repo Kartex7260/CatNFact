@@ -1,6 +1,8 @@
 package kanti.catnfact.ui.components.fact
 
-class ExpanderManager {
+import javax.inject.Inject
+
+class ExpanderManager @Inject constructor() {
 
 	private var currentHash: String? = null
 

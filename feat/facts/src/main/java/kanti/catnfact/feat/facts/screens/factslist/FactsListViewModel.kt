@@ -29,9 +29,9 @@ class FactsListViewModel @Inject constructor(
 	init {
 		initialLoad()
 		viewModelScope.launch(Dispatchers.Default) {
-			getPagingFactsListUseCase.isLast.collect {
+			getPagingFactsListUseCase.isLast.collect { isLast ->
 				mState.update {
-					it.copy(isLast = true)
+					it.copy(isLast = isLast)
 				}
 			}
 		}

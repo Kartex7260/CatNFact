@@ -28,7 +28,7 @@ class GetPagingFactsListUseCase @Inject constructor(
 	private var dataError: DataError? = null
 
 	private val mIsLast = MutableStateFlow(false)
-	val isLast: StateFlow<Any> = mIsLast.asStateFlow()
+	val isLast: StateFlow<Boolean> = mIsLast.asStateFlow()
 
 	suspend operator fun invoke(): DataResult<List<Fact>, DataError> {
 		return withContext(Dispatchers.Default) {

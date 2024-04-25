@@ -1,6 +1,5 @@
 package kanti.catnfact.feat.facts.screens.factslist
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -111,7 +110,8 @@ fun FactsListContent(
 							}
 						)
 					}
-				}
+				},
+				scrollBehavior = scrollBehavior
 			)
 		}
 	) { paddingValues ->
@@ -126,18 +126,12 @@ fun FactsListContent(
 					key = { state.facts[it].hash }
 				) { index ->
 					val factUiState = state.facts[index]
-					AnimatedContent(
+					FactCard(
 						modifier = Modifier.animateItemPlacement(),
-						targetState = factUiState,
-						label = "factUiState"
-					) { uiState ->
-						FactCard(
-							modifier = Modifier,
-							state = uiState,
-							onChangeExpand = { onFactAction(OnChangeExpandIntent(uiState.hash)) },
-							onChangeFavourite = { onFactAction(ChangeFavouriteIntent(uiState.hash)) }
-						)
-					}
+						state = factUiState,
+						onChangeExpand = { onFactAction(OnChangeExpandIntent(factUiState.hash)) },
+						onChangeFavourite = { onFactAction(ChangeFavouriteIntent(factUiState.hash)) }
+					)
 
 					if (index == state.facts.size - 1) {
 						onFactAction(AppendContentIntent)
@@ -146,11 +140,14 @@ fun FactsListContent(
 
 				if (!state.isLast) {
 					item {
-						CircularProgressIndicator(
+						Box(
 							modifier = Modifier
 								.fillMaxWidth()
-								.padding(top = 16.dp)
-						)
+								.padding(vertical = 16.dp),
+							contentAlignment = Alignment.Center
+						) {
+							CircularProgressIndicator()
+						}
 					}
 				}
 			}

@@ -13,18 +13,6 @@ class FactRoomDataSource @Inject constructor(
 	private val factDao: FactDao
 ) : FactLocalDataSource {
 
-	override suspend fun getRandomFact(): DataResult<Fact, LocalError> {
-		return withContext(Dispatchers.Default) {
-			val hashes = factDao.getAllHashes()
-			val hash = hashes.random()
-			val fact = factDao.getFact(hash)
-			if (fact == null)
-				DataResult.Error(NotFoundError())
-			else
-				DataResult.Success(fact.toFact())
-		}
-	}
-
 	override suspend fun getFact(hash: String): DataResult<Fact, LocalError> {
 		return withContext(Dispatchers.Default) {
 			val fact = factDao.getFact(hash)
@@ -44,5 +32,14 @@ class FactRoomDataSource @Inject constructor(
 
 	override suspend fun changeFavourite(hash: String) {
 		factDao.changeFavourite(hash)
+	}
+
+
+	override suspend fun getFactsHashes(limit: Int): List<String> {
+		return factDao.getAllHashes(limit = limit)
+	}
+
+	override suspend fun getFacts(hashes: List<String>): List<Fact> {
+		return factDao.getFactsList(hashes = hashes).map { it.toFact() }
 	}
 }

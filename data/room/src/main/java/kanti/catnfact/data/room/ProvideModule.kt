@@ -7,6 +7,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kanti.catnfact.data.room.fact.FactDao
+import kanti.catnfact.data.room.fact.translated.TranslatedFactDao
 import javax.inject.Singleton
 
 @Module
@@ -22,4 +23,8 @@ class ProvideModule {
 	@Provides
 	@Singleton
 	fun provideFactDao(database: CatNFactDatabase): FactDao = database.factDao()
+
+	@Provides
+	@Singleton
+	fun provideTranslatedFactDao(database: CatNFactDatabase): TranslatedFactDao = database.translatedFactDao()
 }

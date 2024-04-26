@@ -40,5 +40,5 @@ dependencies {
 
 	implementation(project(":data"))
 	implementation(project(":data:fact:api"))
-	implementation(project(":data:retrofit"))
+	implementation(project(":data:retrofit:catfact"))
 }

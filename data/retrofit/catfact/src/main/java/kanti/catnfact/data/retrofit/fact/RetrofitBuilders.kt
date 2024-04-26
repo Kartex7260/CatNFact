@@ -1,6 +1,5 @@
-package kanti.catnfact.data.retrofit
+package kanti.catnfact.data.retrofit.fact
 
-import kanti.catnfact.data.retrofit.fact.FactService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 

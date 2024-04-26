@@ -1,11 +1,11 @@
-package kanti.catnfact.data.retrofit
+package kanti.catnfact.data.retrofit.fact
 
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import kanti.catnfact.data.retrofit.fact.FactService
 import retrofit2.Retrofit
+import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @Module
@@ -14,9 +14,16 @@ class ProvidesModule {
 
 	@Provides
 	@Singleton
+	@CatFactApiRetrofitQualifier
 	fun provideRetrofit(): Retrofit = buildRetrofit()
 
 	@Provides
 	@Singleton
-	fun provideFactService(retrofit: Retrofit): FactService = buildFactService(retrofit)
+	fun provideFactService(
+		@CatFactApiRetrofitQualifier retrofit: Retrofit
+	): FactService = buildFactService(retrofit)
 }
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class CatFactApiRetrofitQualifier

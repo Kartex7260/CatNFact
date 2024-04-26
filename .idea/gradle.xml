@@ -26,6 +26,7 @@
             <option value="$PROJECT_DIR$/data/fact/translated/impl" />
             <option value="$PROJECT_DIR$/data/fact/translated/impl/room" />
             <option value="$PROJECT_DIR$/data/retrofit" />
+            <option value="$PROJECT_DIR$/data/retrofit/catfact" />
             <option value="$PROJECT_DIR$/data/room" />
             <option value="$PROJECT_DIR$/data/settings" />
             <option value="$PROJECT_DIR$/data/settings/api" />

@@ -12,7 +12,7 @@ interface TranslatedFactLocalDataSource {
 	): List<TranslatedFact>
 
 	suspend fun returnUntranslated(
-		facts: Sequence<String>,
+		facts: Sequence<HalfFact>,
 		fromLocaleCode: String,
 		destinationLocaleCode: String
 	): List<HalfFact>

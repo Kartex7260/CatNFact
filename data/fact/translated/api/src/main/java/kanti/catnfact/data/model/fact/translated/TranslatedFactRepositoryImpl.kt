@@ -22,7 +22,7 @@ class TranslatedFactRepositoryImpl @Inject constructor(
 	): DataResult<List<TranslatedFact>, DataError> {
 		return withContext(Dispatchers.Default) {
 			val untranslated = localDataSource.returnUntranslated(
-				facts = facts.map { it.hash },
+				facts = facts,
 				fromLocaleCode = fromLocaleCode,
 				destinationLocaleCode = destinationLocaleCode
 			)

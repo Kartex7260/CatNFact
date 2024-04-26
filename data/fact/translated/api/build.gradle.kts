@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-	namespace = "kanti.catnfact.domain.fact"
+	namespace = "kanti.catnfact.data.model.fact.translated"
 	compileSdk = 34
 
 	defaultConfig {
@@ -37,8 +37,4 @@ dependencies {
 	kapt(libs.dagger.hilt.android.compiler)
 
 	implementation(project(":data"))
-	implementation(project(":data:app:api"))
-	implementation(project(":data:fact:api"))
-	implementation(project(":data:fact:translated:api"))
-	implementation(project(":data:settings:api"))
 }

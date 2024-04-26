@@ -20,11 +20,11 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import kanti.catnfact.ui.components.settings.AutoTranslateItem
 import kanti.catnfact.ui.components.settings.ColorStyleItem
 import kanti.catnfact.ui.components.settings.ColorStyleItemDefaults
 import kanti.catnfact.ui.components.settings.DarkModeItem
 import kanti.catnfact.ui.components.settings.DarkModeItemDefaults
-import kanti.catnfact.ui.components.settings.DarkModeStrings
 import kanti.catnfact.ui.theme.CatNFactTheme
 
 @Composable
@@ -101,6 +101,16 @@ fun MainSettingsContent(
 					),
 					onChangeColorStyle = {
 						onUiSettingsAction(SetColorStyleIntent(it))
+					}
+				)
+			}
+
+			item {
+				AutoTranslateItem(
+					state = uiState.autoTranslate,
+					headlineText = stringResource(id = R.string.auto_translate_to_locale),
+					onChangeState = {
+						onUiSettingsAction(SetAutoTranslate(it))
 					}
 				)
 			}

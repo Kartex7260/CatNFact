@@ -4,8 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kanti.catnfact.data.model.settings.SettingsRepository
-import kanti.catnfact.ui.components.settings.ColorStyleUiState
-import kanti.catnfact.ui.components.settings.DarkModeUiState
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -22,7 +20,8 @@ class MainSettingsViewModel @Inject constructor(
 		.map { settingsData ->
 			UiSettingsUiState(
 				darkMode = settingsData.darkMode.toUiState(),
-				colorStyle = settingsData.colorStyle.toUiState()
+				colorStyle = settingsData.colorStyle.toUiState(),
+				autoTranslate = settingsData.autoTranslate
 			)
 		}
 		.stateIn(
@@ -31,22 +30,29 @@ class MainSettingsViewModel @Inject constructor(
 			initialValue = UiSettingsUiState()
 		)
 
-	fun onUiSettingsAction(uiIntent: UiSettingsIntent) {
-		when (uiIntent) {
-			is SetDarkModeIntent -> setDarkMode(uiIntent.darkMode)
-			is SetColorStyleIntent -> setColorStyle(uiIntent.colorStyle)
+	fun onUiSettingsAction(intent: UiSettingsIntent) {
+		when (intent) {
+			is SetDarkModeIntent -> setDarkMode(intent)
+			is SetColorStyleIntent -> setColorStyle(intent)
+			is SetAutoTranslate -> setAutoTranslate(intent)
 		}
 	}
 
-	private fun setDarkMode(darkMode: DarkModeUiState) {
+	private fun setDarkMode(intent: SetDarkModeIntent) {
 		viewModelScope.launch {
-			settingsRepository.setDarkMode(darkMode.toDarkMode())
+			settingsRepository.setDarkMode(intent.darkMode.toDarkMode())
 		}
 	}
 
-	private fun setColorStyle(colorStyle: ColorStyleUiState) {
+	private fun setColorStyle(intent: SetColorStyleIntent) {
 		viewModelScope.launch {
-			settingsRepository.setColorStyle(colorStyle.toColorStyle())
+			settingsRepository.setColorStyle(intent.colorStyle.toColorStyle())
+		}
+	}
+
+	private fun setAutoTranslate(intent: SetAutoTranslate) {
+		viewModelScope.launch {
+			settingsRepository.setAutoTranslate(intent.enabled)
 		}
 	}
 }

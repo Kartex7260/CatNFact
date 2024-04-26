@@ -12,4 +12,6 @@
 
     <string name="as_system">As system</string>
 
+    <string name="auto_translate_to_locale">Automatic translation to the device locale</string>
+
 </resources>

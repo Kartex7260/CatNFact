@@ -9,4 +9,6 @@ interface SettingsRepository {
 	suspend fun setDarkMode(darkMode: DarkMode)
 
 	suspend fun setColorStyle(colorStyle: ColorStyle)
+
+	suspend fun setAutoTranslate(enabled: Boolean)
 }

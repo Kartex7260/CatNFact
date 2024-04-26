@@ -12,3 +12,5 @@ sealed interface UiSettingsIntent
 data class SetDarkModeIntent(val darkMode: DarkModeUiState) : UiSettingsIntent
 
 data class SetColorStyleIntent(val colorStyle: ColorStyleUiState) : UiSettingsIntent
+
+data class SetAutoTranslate(val enabled: Boolean) : UiSettingsIntent

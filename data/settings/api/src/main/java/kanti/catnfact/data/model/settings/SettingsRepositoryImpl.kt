@@ -19,6 +19,10 @@ class SettingsRepositoryImpl @Inject constructor(
 				colorStyle = localSettingsData.colorStyle ?: return@map run {
 					setColorStyle(COLOR_STYLE_DEFAULT)
 					null
+				},
+				autoTranslate = localSettingsData.autoTranslate ?: return@map run {
+					setAutoTranslate(AUTO_TRANSLATE_DEFAULT)
+					null
 				}
 			)
 		}
@@ -32,9 +36,14 @@ class SettingsRepositoryImpl @Inject constructor(
 		localDataSource.setColorStyle(colorStyle)
 	}
 
+	override suspend fun setAutoTranslate(enabled: Boolean) {
+		localDataSource.setAutoTranslate(enabled)
+	}
+
 	companion object {
 
 		private val DARK_MODE_DEFAULT = DarkMode.AsSystem
 		private val COLOR_STYLE_DEFAULT = ColorStyle.CatNFact
+		private const val AUTO_TRANSLATE_DEFAULT = true
 	}
 }

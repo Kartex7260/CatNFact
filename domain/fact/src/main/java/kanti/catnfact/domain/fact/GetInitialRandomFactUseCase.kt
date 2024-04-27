@@ -6,6 +6,7 @@ import kanti.catnfact.data.app.AppDataRepository
 import kanti.catnfact.data.model.fact.Fact
 import kanti.catnfact.data.model.fact.FactRepository
 import kanti.catnfact.data.runIfNotError
+import kanti.catnfact.domain.fact.translated.GetTranslatedFactsUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
@@ -15,8 +16,8 @@ import javax.inject.Inject
 
 class GetInitialRandomFactUseCase @Inject constructor(
 	private val appDataRepository: AppDataRepository,
-	private val factRepository: FactRepository,
-	private val getRandomFactUseCase: GetRandomFactUseCase
+	private val getRandomFactUseCase: GetRandomFactUseCase,
+	private val getTranslatedFactsUseCase: GetTranslatedFactsUseCase
 ) {
 
 	suspend operator fun invoke(): Flow<DataResult<Fact, DataError>> {
@@ -24,8 +25,8 @@ class GetInitialRandomFactUseCase @Inject constructor(
 			withContext(Dispatchers.Default) {
 				val lastHash = appDataRepository.lastFactHash.firstOrNull()
 				if (lastHash != null) {
-					val fact = factRepository.getFact(lastHash)
-					send(fact.runIfNotError { DataResult.Success(it) })
+					val fact = getTranslatedFactsUseCase(listOf(lastHash))
+					send(fact.runIfNotError { DataResult.Success(it[0]) })
 				}
 
 				val randomFact = getRandomFactUseCase()

@@ -62,6 +62,8 @@ fun FactsListScreen(
 	LifecycleStartEffect(viewModel) {
 		if (state.isNoConnection)
 			viewModel.onFactAction(OnRefreshIntent)
+		else
+			viewModel.onFactAction(OnReshowIntent)
 		onStopOrDispose {  }
 	}
 

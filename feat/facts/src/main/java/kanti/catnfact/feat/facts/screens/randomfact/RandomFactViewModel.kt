@@ -8,6 +8,7 @@ import kanti.catnfact.data.NotFoundError
 import kanti.catnfact.data.model.fact.FactRepository
 import kanti.catnfact.domain.fact.GetInitialRandomFactUseCase
 import kanti.catnfact.domain.fact.GetRandomFactUseCase
+import kanti.catnfact.domain.fact.translated.GetTranslatedFactsUseCase
 import kanti.catnfact.feat.facts.toUiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,7 +25,8 @@ import javax.inject.Inject
 class RandomFactViewModel @Inject constructor(
 	private val factRepository: FactRepository,
 	private val getRandomFactUseCase: GetRandomFactUseCase,
-	private val getInitialRandomFactUseCase: GetInitialRandomFactUseCase
+	private val getInitialRandomFactUseCase: GetInitialRandomFactUseCase,
+	private val getTranslatedFactsUseCase: GetTranslatedFactsUseCase
 ) : ViewModel() {
 
 	private val mState = MutableStateFlow(RandomFactUiState())
@@ -38,6 +40,7 @@ class RandomFactViewModel @Inject constructor(
 		when (intent) {
 			is OnNextRandomFactIntent -> onNextRandomFact()
 			is OnChangeFavouriteIntent -> onChangeFavourite(intent)
+			is OnReshowIntent -> onReshow()
 		}
 	}
 
@@ -87,6 +90,22 @@ class RandomFactViewModel @Inject constructor(
 			mState.update { state ->
 				state.copy(
 					fact = fact ?: state.fact
+				)
+			}
+		}
+	}
+
+	private fun onReshow() {
+		viewModelScope.launch(Dispatchers.Default) {
+			val currentFactHash = mState.value.fact.hash
+			val translatedFact = getTranslatedFactsUseCase(listOf(currentFactHash))
+
+			val fact = translatedFact.value?.get(0)?.toUiState()
+			mState.update { state ->
+				state.copy(
+					fact = fact ?: state.fact,
+					isLoading = false,
+					isNoConnection = translatedFact.error is NoConnectionError
 				)
 			}
 		}

@@ -15,3 +15,5 @@ internal data class OnChangeFavouriteIntent(val hash: String) : FactIntent
 internal data object OnRefreshIntent : FactIntent
 
 internal data object OnAppendContentIntent : FactIntent
+
+internal data object OnReshowIntent : FactIntent

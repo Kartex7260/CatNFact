@@ -43,6 +43,7 @@ class FactsListViewModel @Inject constructor(
 			is OnChangeFavouriteIntent -> onChangeFavourite(intent)
 			is OnRefreshIntent -> onRefresh()
 			is OnAppendContentIntent -> onAppendContent()
+			is OnReshowIntent -> onReshow()
 		}
 	}
 
@@ -97,6 +98,12 @@ class FactsListViewModel @Inject constructor(
 			}
 
 			getPagingFactsListUseCase.load()
+			showDataFromUseCase()
+		}
+	}
+
+	private fun onReshow() {
+		viewModelScope.launch(Dispatchers.Default) {
 			showDataFromUseCase()
 		}
 	}

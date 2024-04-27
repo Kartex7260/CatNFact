@@ -12,3 +12,5 @@ sealed interface RandomFactIntent
 internal data class OnChangeFavouriteIntent(val hash: String) : RandomFactIntent
 
 internal data object OnNextRandomFactIntent : RandomFactIntent
+
+internal data object OnReshowIntent : RandomFactIntent

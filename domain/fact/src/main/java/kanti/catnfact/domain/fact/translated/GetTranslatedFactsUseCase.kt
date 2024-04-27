@@ -14,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
+import java.util.Locale
 import javax.inject.Inject
 
 class GetTranslatedFactsUseCase @Inject constructor(
@@ -31,7 +32,7 @@ class GetTranslatedFactsUseCase @Inject constructor(
 			val facts = factsDeferred.await()
 
 			if (translateEnabled) {
-				val currentLocaleCode = context.resources.configuration.locales.get(0).country
+				val currentLocaleCode = context.resources.configuration.locales.get(0).language
 				val translatedFactsResult = translatedFactRepository.translate(
 					facts = facts.asSequence().map { fact ->
 						HalfFact(hash = fact.hash, fact = fact.fact)
@@ -55,6 +56,6 @@ class GetTranslatedFactsUseCase @Inject constructor(
 
 	companion object {
 
-		private const val SOURCE_LOCALE = "en"
+		private val SOURCE_LOCALE = Locale.US.language
 	}
 }

@@ -29,6 +29,7 @@ android {
 	props.load(file(yaTranslatorApiKey).inputStream())
 	buildTypes.forEach {
 		it.buildConfigField("String", "YA_TRANSLATOR_API_KEY", props["YANDEX_TRANSLATE_API_KEY"] as String)
+		it.buildConfigField("String", "YA_CLOUD_FOLDER_ID", props["YA_CLOUD_FOLDER_ID"] as String)
 	}
 
 	compileOptions {

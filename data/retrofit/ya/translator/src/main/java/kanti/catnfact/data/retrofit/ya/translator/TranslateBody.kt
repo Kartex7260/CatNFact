@@ -5,6 +5,7 @@ data class TranslateBody(
 	val targetLanguageCode: String,
 	val texts: List<String>,
 
+	val folderId: String = BuildConfig.YA_CLOUD_FOLDER_ID,
 	val format: String = FORMAT_PLAIN_TEXT,
 	val speller: Boolean = false
 ) {

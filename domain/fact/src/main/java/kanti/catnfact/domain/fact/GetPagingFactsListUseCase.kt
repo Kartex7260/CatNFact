@@ -5,6 +5,8 @@ import kanti.catnfact.data.DataResult
 import kanti.catnfact.data.ValueIsNullError
 import kanti.catnfact.data.model.fact.Fact
 import kanti.catnfact.data.model.fact.FactRepository
+import kanti.catnfact.data.runIfNotError
+import kanti.catnfact.domain.fact.translated.GetTranslatedFactsUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,7 +17,8 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class GetPagingFactsListUseCase @Inject constructor(
-	private val factRepository: FactRepository
+	private val factRepository: FactRepository,
+	private val getTranslatedFactsUseCase: GetTranslatedFactsUseCase
 ) {
 
 	private val mutex = Mutex()
@@ -37,15 +40,17 @@ class GetPagingFactsListUseCase @Inject constructor(
 					DataResult.Error(
 						error = dataError!!,
 						value = hashes?.let { hashes ->
-							val facts = factRepository.getLocalFacts(hashes)
-							hashes.map { hash -> facts.first { it.hash == hash } }
+							val translatedFacts = getTranslatedFactsUseCase(hashes).value ?: return@let null
+							hashes.map { hash -> translatedFacts.first { it.hash == hash } }
 						}
 					)
 				} else if (hashes != null) {
-					val facts = factRepository.getLocalFacts(hashes = hashes!!)
-					DataResult.Success(
-						hashes?.map { hash -> facts.first { it.hash == hash } } ?: facts
-					)
+					val translatedFacts = getTranslatedFactsUseCase(hashes!!)
+					translatedFacts.runIfNotError { facts ->
+						DataResult.Success(
+							value = hashes!!.map { hash -> facts.first { it.hash == hash } }
+						)
+					}
 				} else
 					DataResult.Error(ValueIsNullError())
 			}

@@ -4,8 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kanti.catnfact.data.NoConnectionError
+import kanti.catnfact.data.model.fact.Fact
 import kanti.catnfact.data.model.fact.FactRepository
-import kanti.catnfact.domain.fact.GetPagingFactsListUseCase
+import kanti.catnfact.data.paging.Pagination
+import kanti.catnfact.domain.fact.FactsPagingQualifier
 import kanti.catnfact.feat.facts.toUiState
 import kanti.catnfact.ui.components.fact.ExpanderManager
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class FactsListViewModel @Inject constructor(
 	private val factRepository: FactRepository,
-	private val getPagingFactsListUseCase: GetPagingFactsListUseCase,
+	@FactsPagingQualifier private val factPaging: Pagination<Fact>,
 	private val expanderManager: ExpanderManager
 ) : ViewModel() {
 
@@ -29,9 +31,9 @@ class FactsListViewModel @Inject constructor(
 	init {
 		initialLoad()
 		viewModelScope.launch(Dispatchers.Default) {
-			getPagingFactsListUseCase.isLast.collect { isLast ->
+			factPaging.isNoMore.collect { isNoMore ->
 				mState.update {
-					it.copy(isLast = isLast)
+					it.copy(isLast = isNoMore)
 				}
 			}
 		}
@@ -70,14 +72,14 @@ class FactsListViewModel @Inject constructor(
 	private fun onRefresh() {
 		viewModelScope.launch(Dispatchers.Default) {
 			mState.update { it.copy(isLoading = true) }
-			getPagingFactsListUseCase.load()
+			factPaging.load()
 			showDataFromUseCase()
 		}
 	}
 
 	private fun onAppendContent() {
 		viewModelScope.launch(Dispatchers.Default) {
-			getPagingFactsListUseCase.load()
+			factPaging.load()
 			showDataFromUseCase()
 		}
 	}
@@ -86,9 +88,9 @@ class FactsListViewModel @Inject constructor(
 		viewModelScope.launch(Dispatchers.Default) {
 			mState.update { it.copy(isLoading = true) }
 
-			getPagingFactsListUseCase.setPageSize(25)
-			getPagingFactsListUseCase.loadLocal()
-			val local = getPagingFactsListUseCase().value ?: listOf()
+			factPaging.setPageLimit(25)
+			factPaging.loadLocal()
+			val local = factPaging.getData().value ?: listOf()
 			mState.update { state ->
 				state.copy(
 					facts = local.map {
@@ -97,7 +99,7 @@ class FactsListViewModel @Inject constructor(
 				)
 			}
 
-			getPagingFactsListUseCase.load()
+			factPaging.load()
 			showDataFromUseCase()
 		}
 	}
@@ -109,7 +111,7 @@ class FactsListViewModel @Inject constructor(
 	}
 
 	private suspend fun showDataFromUseCase() {
-		val factsResult = getPagingFactsListUseCase()
+		val factsResult = factPaging.getData()
 		mState.update { state ->
 			state.copy(
 				facts = factsResult.value?.map {

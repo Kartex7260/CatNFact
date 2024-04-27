@@ -90,7 +90,7 @@ abstract class BasePagination<DataType>(
 		}
 	}
 
-	protected abstract fun loadLocal0(limit: Int): List<DataType>
+	protected abstract suspend fun loadLocal0(limit: Int): List<DataType>
 
-	protected abstract fun load0(page: Int, limit: Int): DataResult<List<DataType>, DataError>
+	protected abstract suspend fun load0(page: Int, limit: Int): DataResult<List<DataType>, DataError>
 }

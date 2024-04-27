@@ -76,6 +76,8 @@ dependencies {
 	implementation(project(":data:app:impl:datastore"))
 	implementation(project(":data:fact:impl:retrofit"))
 	implementation(project(":data:fact:impl:room"))
+	implementation(project(":data:fact:translated:impl:retrofit"))
+	implementation(project(":data:fact:translated:impl:room"))
 	implementation(project(":data:settings:api"))
 	implementation(project(":data:settings:impl:datastore"))
 	implementation(project(":feat:facts"))

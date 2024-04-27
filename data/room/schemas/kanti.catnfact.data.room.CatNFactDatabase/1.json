@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "68feeec5cf8ff73e5bcd117236dd58a5",
+    "identityHash": "6eb7d0e64ef1e862c4b6b75f743746dc",
     "entities": [
       {
         "tableName": "facts",
@@ -35,12 +35,50 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "translated_facts",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`hash` TEXT NOT NULL, `fact` TEXT NOT NULL, `from_locale_code` TEXT NOT NULL, `destination_locale_code` TEXT NOT NULL, PRIMARY KEY(`hash`))",
+        "fields": [
+          {
+            "fieldPath": "hash",
+            "columnName": "hash",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fact",
+            "columnName": "fact",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fromLocaleCode",
+            "columnName": "from_locale_code",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "destinationLocaleCode",
+            "columnName": "destination_locale_code",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "hash"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '68feeec5cf8ff73e5bcd117236dd58a5')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6eb7d0e64ef1e862c4b6b75f743746dc')"
     ]
   }
 }

@@ -4,7 +4,6 @@ import kanti.catnfact.data.DataError
 import kanti.catnfact.data.DataResult
 import kanti.catnfact.data.app.AppDataRepository
 import kanti.catnfact.data.model.fact.Fact
-import kanti.catnfact.data.model.fact.FactRepository
 import kanti.catnfact.data.runIfNotError
 import kanti.catnfact.domain.fact.translated.GetTranslatedFactsUseCase
 import kotlinx.coroutines.Dispatchers

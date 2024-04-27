@@ -86,7 +86,9 @@ class RandomFactViewModel @Inject constructor(
 			if (factResult.error is NotFoundError)
 				onAction(OnNextRandomFactIntent)
 
-			val fact = factResult.value?.toUiState()
+			val translatedFact = getTranslatedFactsUseCase(listOf(intent.hash))
+
+			val fact = translatedFact.value?.get(0)?.toUiState()
 			mState.update { state ->
 				state.copy(
 					fact = fact ?: state.fact
@@ -104,8 +106,7 @@ class RandomFactViewModel @Inject constructor(
 			mState.update { state ->
 				state.copy(
 					fact = fact ?: state.fact,
-					isLoading = false,
-					isNoConnection = translatedFact.error is NoConnectionError
+					isLoading = false
 				)
 			}
 		}

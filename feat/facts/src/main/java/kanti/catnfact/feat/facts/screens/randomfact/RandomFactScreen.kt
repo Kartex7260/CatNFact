@@ -62,10 +62,9 @@ fun RandomFactScreen(
 	val state by viewModel.factUiState.collectAsState()
 
 	LifecycleStartEffect(viewModel) {
+		viewModel.onAction(OnReshowIntent)
 		if (state.isNoConnection)
 			viewModel.onAction(OnNextRandomFactIntent)
-		else
-			viewModel.onAction(OnReshowIntent)
 		onStopOrDispose {  }
 	}
 

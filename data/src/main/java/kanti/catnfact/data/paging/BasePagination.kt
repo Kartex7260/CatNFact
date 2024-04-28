@@ -4,14 +4,17 @@ import kanti.catnfact.data.DataError
 import kanti.catnfact.data.DataResult
 import kanti.catnfact.data.ValueIsNullError
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
 abstract class BasePagination<DataType>(
+	private val pageLimit: Int,
 	private val context: CoroutineContext = Dispatchers.Default
 ) : Pagination<DataType> {
 
@@ -19,28 +22,31 @@ abstract class BasePagination<DataType>(
 
 	private var isLocalData: Boolean = false
 	private var page = 0
-	private var pageLimit: Int = 25
 
-	private var data: MutableList<DataType>? = null
+	private var mData: MutableList<DataType>? = null
 	private var error: DataError? = null
 
 	private val mIsNoMore = MutableStateFlow(false)
-	override val isNoMore = mIsNoMore.asStateFlow()
+	override val isNoMore: Flow<Boolean> = mIsNoMore.asStateFlow()
 
-	override suspend fun setPageLimit(limit: Int) {
-		mutex.withLock { pageLimit = limit }
-	}
+	private val updateState = MutableStateFlow(Any())
+	override val data: Flow<DataResult<List<DataType>, DataError>> = updateState
+		.map { getCurrentData() }
 
-	override suspend fun getData(): DataResult<List<DataType>, DataError> = withContext(context) {
+	private suspend fun getCurrentData(): DataResult<List<DataType>, DataError> = withContext(context) {
 		mutex.withLock {
 			val error = error
 			if (error != null) {
-				return@withContext DataResult.Error(error, data)
+				return@withContext DataResult.Error(error, mData)
 			}
 
-			val data = data ?: return@withContext DataResult.Error(ValueIsNullError("Data"))
+			val data = mData ?: return@withContext DataResult.Error(ValueIsNullError("Data"))
 			DataResult.Success(data)
 		}
+	}
+
+	override fun updateData() {
+		updateState.value = Any()
 	}
 
 	override suspend fun loadLocal() = withContext(context) {
@@ -50,10 +56,11 @@ abstract class BasePagination<DataType>(
 			isLocalData = true
 			page = 1
 
-			data = localData.toMutableList()
+			mData = localData.toMutableList()
 			error = null
 
 			mIsNoMore.value = false
+			updateState.value = Any()
 		}
 	}
 
@@ -66,28 +73,29 @@ abstract class BasePagination<DataType>(
 
 			error = remoteDataResult.error
 			if (remoteDataResult.error != null)
-				return@withContext
+				return@withLock
 
-			val remoteData = remoteDataResult.value ?: return@withContext
+			val remoteData = remoteDataResult.value ?: return@withLock
 
 			if (remoteData.isEmpty()) {
 				mIsNoMore.value = true
-				return@withContext
+				return@withLock
 			}
 
 			if (isLocalData) {
-				data = remoteData.toMutableList()
+				mData = remoteData.toMutableList()
 				isLocalData = false
 			} else {
-				if (data == null) {
-					data = remoteData.toMutableList()
+				if (mData == null) {
+					mData = remoteData.toMutableList()
 				} else {
-					data!!.addAll(remoteData)
+					mData!!.addAll(remoteData)
 				}
 			}
 
 			page++
 		}
+		updateState.value = Any()
 	}
 
 	protected abstract suspend fun loadLocal0(limit: Int): List<DataType>

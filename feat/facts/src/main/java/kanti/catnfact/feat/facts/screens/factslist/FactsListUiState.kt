@@ -8,5 +8,5 @@ data class FactsListUiState(
 	val facts: List<FactUiState> = listOf(),
 	val isLoading: Boolean = false,
 	val isNoConnection: Boolean = false,
-	val isLast: Boolean = false
+	val isNoMore: Boolean = false
 )

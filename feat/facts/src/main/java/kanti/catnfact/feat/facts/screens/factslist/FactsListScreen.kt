@@ -62,8 +62,6 @@ fun FactsListScreen(
 	LifecycleStartEffect(viewModel) {
 		if (state.isNoConnection)
 			viewModel.onFactAction(OnRefreshIntent)
-		else
-			viewModel.onFactAction(OnReshowIntent)
 		onStopOrDispose {  }
 	}
 
@@ -158,7 +156,7 @@ fun FactsListContent(
 					}
 				}
 
-				if (!state.isLast) {
+				if (!state.isNoMore) {
 					item {
 						Box(
 							modifier = Modifier

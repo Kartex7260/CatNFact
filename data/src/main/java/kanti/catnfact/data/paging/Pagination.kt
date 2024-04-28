@@ -2,15 +2,15 @@ package kanti.catnfact.data.paging
 
 import kanti.catnfact.data.DataError
 import kanti.catnfact.data.DataResult
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.Flow
 
-interface Pagination<T> {
+interface Pagination<DataType> {
 
-	val isNoMore: StateFlow<Boolean>
+	val data: Flow<DataResult<List<DataType>, DataError>>
 
-	suspend fun setPageLimit(limit: Int)
+	val isNoMore: Flow<Boolean>
 
-	suspend fun getData(): DataResult<List<T>, DataError>
+	fun updateData()
 
 	suspend fun loadLocal()
 

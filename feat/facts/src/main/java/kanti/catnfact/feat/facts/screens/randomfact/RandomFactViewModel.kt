@@ -3,79 +3,78 @@ package kanti.catnfact.feat.facts.screens.randomfact
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kanti.catnfact.data.DataError
+import kanti.catnfact.data.DataResult
 import kanti.catnfact.data.NoConnectionError
 import kanti.catnfact.data.NotFoundError
+import kanti.catnfact.data.app.AppDataRepository
+import kanti.catnfact.data.model.fact.Fact
 import kanti.catnfact.data.model.fact.FactRepository
-import kanti.catnfact.domain.fact.GetInitialRandomFactUseCase
+import kanti.catnfact.data.model.settings.SettingsRepository
+import kanti.catnfact.data.runIfNotError
 import kanti.catnfact.domain.fact.GetRandomFactUseCase
 import kanti.catnfact.domain.fact.translated.GetTranslatedFactsUseCase
 import kanti.catnfact.feat.facts.toUiState
+import kanti.catnfact.ui.components.fact.FactUiState
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class RandomFactViewModel @Inject constructor(
+	private val appDataRepository: AppDataRepository,
+	private val settingsRepository: SettingsRepository,
 	private val factRepository: FactRepository,
 	private val getRandomFactUseCase: GetRandomFactUseCase,
-	private val getInitialRandomFactUseCase: GetInitialRandomFactUseCase,
 	private val getTranslatedFactsUseCase: GetTranslatedFactsUseCase
 ) : ViewModel() {
 
-	private val mState = MutableStateFlow(RandomFactUiState())
-	val factUiState: StateFlow<RandomFactUiState> = mState.asStateFlow()
+	private val mIsLoading = MutableStateFlow(false)
+	private val mIsNoConnection = MutableStateFlow(false)
+
+	private val updateState = MutableStateFlow(Any())
+	val factUiState: StateFlow<RandomFactUiState> = updateState
+		.combine(appDataRepository.lastFactHash) { _, hash -> hash }
+		.getData()
+		.toUiState()
+		.combineWithOtherStates()
+		.flowOn(Dispatchers.Default)
+		.stateIn(
+			scope = viewModelScope,
+			started = SharingStarted.Eagerly,
+			initialValue = RandomFactUiState()
+		)
 
 	init {
-		initialRandomFact()
+		onNextRandomFact()
 	}
 
 	fun onAction(intent: RandomFactIntent) {
 		when (intent) {
 			is OnNextRandomFactIntent -> onNextRandomFact()
 			is OnChangeFavouriteIntent -> onChangeFavourite(intent)
-			is OnReshowIntent -> onReshow()
-		}
-	}
-
-	private fun initialRandomFact() {
-		viewModelScope.launch(Dispatchers.Default) {
-			mState.update { it.copy(isLoading = true) }
-			val initialFactsFlow = getInitialRandomFactUseCase()
-			initialFactsFlow
-				.onEach { factResult ->
-					mState.update { state ->
-						val newFact = factResult.value?.toUiState() ?: state.fact
-						state.copy(
-							fact = newFact,
-							isNoConnection = factResult.error is NoConnectionError
-						)
-					}
-				}
-				.onCompletion { mState.update { it.copy(isLoading = false) } }
-				.collect()
 		}
 	}
 
 	private fun onNextRandomFact() {
 		viewModelScope.launch(Dispatchers.Default) {
-			mState.update { it.copy(isLoading = true) }
+			mIsLoading.value = true
 			val randomFactResult = getRandomFactUseCase()
 
-			val fact = randomFactResult.value?.toUiState()
-			mState.update { state ->
-				state.copy(
-					fact = fact ?: state.fact,
-					isLoading = false,
-					isNoConnection = randomFactResult.error is NoConnectionError
-				)
+			mIsNoConnection.value = randomFactResult.error is NoConnectionError
+
+			val fact = randomFactResult.value ?: return@launch run {
+				mIsLoading.value = false
 			}
+			appDataRepository.setLastFactHash(fact.hash)
 		}
 	}
 
@@ -85,30 +84,38 @@ class RandomFactViewModel @Inject constructor(
 
 			if (factResult.error is NotFoundError)
 				onAction(OnNextRandomFactIntent)
-
-			val translatedFact = getTranslatedFactsUseCase(listOf(intent.hash))
-
-			val fact = translatedFact.value?.get(0)?.toUiState()
-			mState.update { state ->
-				state.copy(
-					fact = fact ?: state.fact
-				)
-			}
+			else
+				updateState.value = Any()
 		}
 	}
 
-	private fun onReshow() {
-		viewModelScope.launch(Dispatchers.Default) {
-			val currentFactHash = mState.value.fact.hash
-			val translatedFact = getTranslatedFactsUseCase(listOf(currentFactHash))
+	private fun Flow<String?>.getData(): Flow<DataResult<Fact, DataError>> {
+		return combine(settingsRepository.settings) { hash, settings ->
+			if (hash == null)
+				return@combine DataResult.Success(Fact())
 
-			val fact = translatedFact.value?.get(0)?.toUiState()
-			mState.update { state ->
-				state.copy(
-					fact = fact ?: state.fact,
-					isLoading = false
-				)
-			}
+			val result = getTranslatedFactsUseCase(
+				hashes = listOf(hash),
+				translateEnabled = settings.autoTranslate
+			)
+			result.runIfNotError { facts -> DataResult.Success(facts[0]) }
+		}
+	}
+
+	private fun Flow<DataResult<Fact, DataError>>.toUiState(): Flow<FactUiState> {
+		return map { translatedFact ->
+			mIsLoading.value = false
+			translatedFact.value?.toUiState() ?: FactUiState()
+		}
+	}
+
+	private fun Flow<FactUiState>.combineWithOtherStates(): Flow<RandomFactUiState> {
+		return combine(this, mIsLoading, mIsNoConnection) { fact, isLoading, isNoConnection ->
+			RandomFactUiState(
+				fact = fact,
+				isLoading = isLoading,
+				isNoConnection = isNoConnection
+			)
 		}
 	}
 }

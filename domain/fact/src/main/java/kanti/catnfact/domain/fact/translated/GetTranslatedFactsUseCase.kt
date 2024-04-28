@@ -8,27 +8,25 @@ import kanti.catnfact.data.model.fact.Fact
 import kanti.catnfact.data.model.fact.FactRepository
 import kanti.catnfact.data.model.fact.translated.TranslatedFactRepository
 import kanti.catnfact.data.model.fact.translated.datasource.HalfFact
-import kanti.catnfact.data.model.settings.SettingsRepository
 import kanti.catnfact.data.runIfNotError
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import java.util.Locale
 import javax.inject.Inject
 
 class GetTranslatedFactsUseCase @Inject constructor(
 	@ApplicationContext private val context: Context,
-	private val settingsRepository: SettingsRepository,
 	private val translatedFactRepository: TranslatedFactRepository,
 	private val factRepository: FactRepository
 ) {
 
-	suspend operator fun invoke(hashes: List<String>): DataResult<List<Fact>, DataError> {
+	suspend operator fun invoke(
+		hashes: List<String>,
+		translateEnabled: Boolean = true
+	): DataResult<List<Fact>, DataError> {
 		return withContext(Dispatchers.Default) {
-			val translateEnabledDeferred = async { settingsRepository.settings.first().autoTranslate }
 			val factsDeferred = async { factRepository.getLocalFacts(hashes) }
-			val translateEnabled = translateEnabledDeferred.await()
 			val facts = factsDeferred.await()
 
 			if (translateEnabled) {

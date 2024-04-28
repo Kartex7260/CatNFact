@@ -55,7 +55,9 @@ dependencies {
 	kapt(libs.dagger.hilt.android.compiler)
 
 	implementation(project(":data"))
+	implementation(project(":data:app:api"))
 	implementation(project(":data:fact:api"))
+	implementation(project(":data:settings:api"))
 	implementation(project(":domain:fact"))
 	implementation(project(":ui"))
 	implementation(project(":ui:facts"))

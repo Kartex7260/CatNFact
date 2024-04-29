@@ -8,7 +8,7 @@ import kanti.catnfact.data.NoConnectionError
 import kanti.catnfact.data.RemoteError
 import kanti.catnfact.data.UnexpectedError
 import kanti.catnfact.data.model.fact.Fact
-import kanti.catnfact.data.retrofit.fact.FactService
+import kanti.catnfact.data.retrofit.catfact.fact.FactService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.IOException

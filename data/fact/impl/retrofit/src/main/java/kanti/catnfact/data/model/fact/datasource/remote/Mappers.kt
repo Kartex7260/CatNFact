@@ -1,7 +1,7 @@
 package kanti.catnfact.data.model.fact.datasource.remote
 
 import kanti.catnfact.data.model.fact.Fact
-import kanti.catnfact.data.retrofit.fact.FactDto
+import kanti.catnfact.data.retrofit.catfact.fact.FactDto
 import java.math.BigInteger
 import java.security.MessageDigest
 

@@ -1,4 +1,4 @@
-package kanti.catnfact.data.retrofit.fact
+package kanti.catnfact.data.retrofit.catfact.fact
 
 data class FactsDto(
 	val data: List<FactDto> = listOf()

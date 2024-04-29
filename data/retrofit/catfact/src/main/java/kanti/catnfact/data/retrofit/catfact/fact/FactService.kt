@@ -1,4 +1,4 @@
-package kanti.catnfact.data.retrofit.fact
+package kanti.catnfact.data.retrofit.catfact.fact
 
 import retrofit2.http.GET
 import retrofit2.http.Query

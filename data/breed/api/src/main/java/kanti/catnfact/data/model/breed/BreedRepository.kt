@@ -5,6 +5,9 @@ import kanti.catnfact.data.DataResult
 
 interface BreedRepository {
 
+	suspend fun changeFavourite(hash: String)
+
+
 	suspend fun getLocalBreedsHashes(limit: Int): List<String>
 
 	suspend fun loadFacts(page: Int, limit: Int): DataResult<List<String>, DataError>

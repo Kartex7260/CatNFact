@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-	namespace = "kanti.catnfact.data.model.breed"
+	namespace = "kanti.catnfact.domain.breed"
 	compileSdk = 34
 
 	defaultConfig {
@@ -37,4 +37,5 @@ dependencies {
 	kapt(libs.dagger.hilt.android.compiler)
 
 	implementation(project(":data"))
+	implementation(project(":data:breed:api"))
 }

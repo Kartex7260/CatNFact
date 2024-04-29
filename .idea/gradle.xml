@@ -38,6 +38,7 @@
             <option value="$PROJECT_DIR$/data/settings/impl" />
             <option value="$PROJECT_DIR$/data/settings/impl/datastore" />
             <option value="$PROJECT_DIR$/domain" />
+            <option value="$PROJECT_DIR$/domain/breed" />
             <option value="$PROJECT_DIR$/domain/fact" />
             <option value="$PROJECT_DIR$/feat" />
             <option value="$PROJECT_DIR$/feat/breeds" />

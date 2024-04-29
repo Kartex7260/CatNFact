@@ -1,15 +1,8 @@
 package kanti.catnfact.ui.components.fact
 
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.ripple.rememberRipple
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -18,18 +11,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.datasource.CollectionPreviewParameterProvider
 import androidx.compose.ui.unit.dp
+import kanti.catnfact.ui.components.ExpandedCard
 import kanti.catnfact.ui.theme.CatNFactTheme
 
 @Composable
@@ -39,35 +31,12 @@ fun FactCard(
 	onChangeExpand: (Boolean) -> Unit = {},
 	onChangeFavourite: () -> Unit = {}
 ) {
-	val containerColorAnimate by animateColorAsState(
-		targetValue = with(MaterialTheme.colorScheme) {
-			if (state.isExpand) surfaceContainerLow else surfaceContainerHighest
-		},
-		label = "containerColor"
-	)
-	val elevationAnimate by animateDpAsState(
-		targetValue = if (state.isExpand) 1.dp else 0.dp,
-		label = "elevation"
-	)
-
-	var enabledClick by remember { mutableStateOf(false) }
-
-	Card(
-		modifier = Modifier
-			.shadow(
-				elevation = elevationAnimate,
-				shape = CardDefaults.shape
-			)
-			.clip(CardDefaults.shape)
-			.clickable(
-				interactionSource = remember { MutableInteractionSource() },
-				indication = rememberRipple(),
-				role = Role.Switch,
-				enabled = enabledClick,
-				onClick = { onChangeExpand(!state.isExpand) }
-			)
-			.then(modifier),
-		colors = CardDefaults.cardColors(containerColor = containerColorAnimate)
+	var enabledClick by rememberSaveable { mutableStateOf(false) }
+	ExpandedCard(
+		modifier = modifier,
+		expanded = state.isExpand,
+		allowExpanding = enabledClick,
+		onChangeExpand = onChangeExpand
 	) {
 		Row(
 			modifier = Modifier

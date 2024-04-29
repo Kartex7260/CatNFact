@@ -9,7 +9,7 @@ import kanti.catnfact.data.model.fact.FactRepository
 import kanti.catnfact.data.paging.Pagination
 import kanti.catnfact.domain.fact.FactsPagingQualifier
 import kanti.catnfact.feat.facts.toUiState
-import kanti.catnfact.ui.components.fact.ExpanderManager
+import kanti.catnfact.ui.components.ExpanderManager
 import kanti.catnfact.ui.components.fact.FactUiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow

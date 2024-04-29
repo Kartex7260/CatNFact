@@ -1,4 +1,4 @@
-package kanti.catnfact.ui.components.fact
+package kanti.catnfact.ui.components
 
 import javax.inject.Inject
 

@@ -1,4 +1,4 @@
-package kanti.catnfact.data.model.fact.datasource.remote
+package kanti.catnfact.data.di
 
 import dagger.Module
 import dagger.Provides

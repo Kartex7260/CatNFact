@@ -80,6 +80,7 @@ dependencies {
 	implementation(project(":data:fact:translated:impl:room"))
 	implementation(project(":data:settings:api"))
 	implementation(project(":data:settings:impl:datastore"))
+	implementation(project(":feat:breeds"))
 	implementation(project(":feat:facts"))
 	implementation(project(":feat:settings"))
 	implementation(project(":ui"))

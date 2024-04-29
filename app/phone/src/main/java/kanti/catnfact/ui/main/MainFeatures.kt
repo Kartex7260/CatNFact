@@ -17,6 +17,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import kanti.catnfact.R
+import kanti.catnfact.feat.breeds.BreedsNavHost
 import kanti.catnfact.feat.facts.FactsNavHost
 
 @Composable
@@ -43,6 +44,9 @@ fun MainFeatures(
 			composable(
 				route = FeatDestinations.BREEDS
 			) {
+				BreedsNavHost(
+					toSettings = toSettings
+				)
 			}
 
 			composable(

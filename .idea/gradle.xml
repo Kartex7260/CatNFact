@@ -38,6 +38,7 @@
             <option value="$PROJECT_DIR$/domain" />
             <option value="$PROJECT_DIR$/domain/fact" />
             <option value="$PROJECT_DIR$/feat" />
+            <option value="$PROJECT_DIR$/feat/breeds" />
             <option value="$PROJECT_DIR$/feat/facts" />
             <option value="$PROJECT_DIR$/feat/settings" />
             <option value="$PROJECT_DIR$/ui" />

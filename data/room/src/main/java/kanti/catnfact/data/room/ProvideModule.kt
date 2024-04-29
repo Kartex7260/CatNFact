@@ -6,6 +6,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kanti.catnfact.data.room.breed.BreedDao
 import kanti.catnfact.data.room.fact.FactDao
 import kanti.catnfact.data.room.fact.translated.TranslatedFactDao
 import javax.inject.Singleton
@@ -27,4 +28,8 @@ class ProvideModule {
 	@Provides
 	@Singleton
 	fun provideTranslatedFactDao(database: CatNFactDatabase): TranslatedFactDao = database.translatedFactDao()
+
+	@Provides
+	@Singleton
+	fun provideBreedDao(database: CatNFactDatabase): BreedDao = database.breedDao()
 }

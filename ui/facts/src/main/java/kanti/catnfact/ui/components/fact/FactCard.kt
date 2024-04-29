@@ -1,9 +1,15 @@
 package kanti.catnfact.ui.components.fact
 
-import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -13,6 +19,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -45,19 +52,41 @@ fun FactCard(
 					end = 4.dp
 				)
 		) {
-			Text(
+			Box(
 				modifier = Modifier
 					.weight(1f)
-					.animateContentSize()
-					.align(Alignment.CenterVertically),
-				text = state.fact,
-				style = MaterialTheme.typography.bodyLarge,
-				maxLines = if (state.isExpand) Int.MAX_VALUE else 2,
-				overflow = TextOverflow.Ellipsis,
-				onTextLayout = { layoutResult ->
-					enabledClick = layoutResult.hasVisualOverflow || layoutResult.lineCount > 2
+					.align(Alignment.CenterVertically)
+			) {
+				androidx.compose.animation.AnimatedVisibility(
+					visible = state.isExpand,
+					enter = fadeIn() + expandVertically(expandFrom = Alignment.Top),
+					exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Top)
+				) {
+					Text(
+						text = state.fact,
+						style = MaterialTheme.typography.bodyLarge,
+						maxLines = Int.MAX_VALUE,
+						onTextLayout = { layoutResult: TextLayoutResult ->
+							enabledClick = layoutResult.hasVisualOverflow || layoutResult.lineCount > 2
+						}
+					)
 				}
-			)
+				androidx.compose.animation.AnimatedVisibility(
+					visible = !state.isExpand,
+					enter = fadeIn(),
+					exit = fadeOut()
+				) {
+					Text(
+						text = state.fact,
+						style = MaterialTheme.typography.bodyLarge,
+						maxLines = 2,
+						overflow = TextOverflow.Ellipsis,
+						onTextLayout = { layoutResult: TextLayoutResult ->
+							enabledClick = layoutResult.hasVisualOverflow || layoutResult.lineCount > 2
+						}
+					)
+				}
+			}
 
 			FavouriteButton(
 				isFavourite = state.isFavourite,
@@ -74,14 +103,20 @@ private fun PreviewFactCard(
 ) {
 	var isExpand by remember { mutableStateOf(false) }
 	CatNFactTheme {
-		FactCard(
-			state = FactUiState(
-				fact = fact,
-				isFavourite = false,
-				isExpand = isExpand
-			),
-			onChangeExpand = { isExpand = it }
-		)
+		Surface {
+			Column(
+				modifier = Modifier.padding(16.dp)
+			) {
+				FactCard(
+					state = FactUiState(
+						fact = fact,
+						isFavourite = false,
+						isExpand = isExpand
+					),
+					onChangeExpand = { isExpand = it }
+				)
+			}
+		}
 	}
 }
 

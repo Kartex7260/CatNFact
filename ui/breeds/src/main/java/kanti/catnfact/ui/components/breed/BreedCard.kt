@@ -1,7 +1,9 @@
 package kanti.catnfact.ui.components.breed
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -140,6 +142,7 @@ fun BreedCard(
 					Spacer(modifier = Modifier.width(4.dp))
 					val rotateAnimate by animateFloatAsState(
 						targetValue = if (state.isExpand) 180f else 0f,
+						animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
 						label = "rotate"
 					)
 					Icon(

@@ -16,6 +16,8 @@
             <option value="$PROJECT_DIR$/data/app/api" />
             <option value="$PROJECT_DIR$/data/app/impl" />
             <option value="$PROJECT_DIR$/data/app/impl/datastore" />
+            <option value="$PROJECT_DIR$/data/breed" />
+            <option value="$PROJECT_DIR$/data/breed/api" />
             <option value="$PROJECT_DIR$/data/fact" />
             <option value="$PROJECT_DIR$/data/fact/api" />
             <option value="$PROJECT_DIR$/data/fact/impl" />

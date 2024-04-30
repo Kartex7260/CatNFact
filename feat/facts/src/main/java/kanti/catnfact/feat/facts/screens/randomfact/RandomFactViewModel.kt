@@ -98,7 +98,10 @@ class RandomFactViewModel @Inject constructor(
 				hashes = listOf(hash),
 				translateEnabled = settings.autoTranslate
 			)
-			result.runIfNotError { facts -> DataResult.Success(facts[0]) }
+			result.runIfNotError { facts ->
+				val fact = facts.getOrNull(0) ?: Fact()
+				DataResult.Success(fact)
+			}
 		}
 	}
 

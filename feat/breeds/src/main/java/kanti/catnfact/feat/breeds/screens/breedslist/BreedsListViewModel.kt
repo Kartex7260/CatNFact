@@ -2,6 +2,7 @@ package kanti.catnfact.feat.breeds.screens.breedslist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kanti.catnfact.data.NoConnectionError
 import kanti.catnfact.data.model.breed.Breed
 import kanti.catnfact.data.model.breed.BreedRepository
@@ -22,6 +23,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class BreedsListViewModel @Inject constructor(
 	private val breedsRepository: BreedRepository,
 	@BreedsPagingQualifier private val breedsPagingManager: Pagination<Breed>,
@@ -42,6 +44,14 @@ class BreedsListViewModel @Inject constructor(
 			started = SharingStarted.Eagerly,
 			initialValue = BreedsListUiState()
 		)
+
+	init {
+		viewModelScope.launch(Dispatchers.Default) {
+			mIsLoading.value = true
+			breedsPagingManager.load()
+			mIsLoading.value = false
+		}
+	}
 
 	fun onAction(intent: BreedsIntent) {
 		when (intent) {

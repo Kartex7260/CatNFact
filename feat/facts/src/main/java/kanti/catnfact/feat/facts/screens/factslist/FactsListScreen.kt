@@ -1,8 +1,10 @@
 package kanti.catnfact.feat.facts.screens.factslist
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -156,15 +158,23 @@ fun FactsListContent(
 					}
 				}
 
-				if (!state.isNoMore) {
+				if (state.facts.isNotEmpty()) {
 					item {
-						Box(
+						AnimatedVisibility(
 							modifier = Modifier
 								.fillMaxWidth()
-								.padding(vertical = 16.dp),
-							contentAlignment = Alignment.Center
+								.animateItemPlacement(),
+							enter = fadeIn() + expandVertically(),
+							exit = fadeOut() + shrinkVertically(),
+							visible = !state.isNoMore
 						) {
-							CircularProgressIndicator()
+							Box {
+								CircularProgressIndicator(
+									modifier = Modifier
+										.align(Alignment.Center)
+										.padding(top = 16.dp)
+								)
+							}
 						}
 					}
 				}

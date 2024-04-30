@@ -5,6 +5,8 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -144,21 +146,23 @@ fun BreedsListContent(
 					}
 				}
 
-				item {
-					AnimatedVisibility(
-						modifier = Modifier
-							.fillMaxWidth()
-							.animateItemPlacement(),
-						enter = fadeIn() + expandVertically(),
-						exit = fadeOut() + shrinkVertically(),
-						visible = !state.isNoMore
-					) {
-						Box {
-							CircularProgressIndicator(
-								modifier = Modifier
-									.align(Alignment.Center)
-									.padding(top = 16.dp)
-							)
+				if (state.breeds.isNotEmpty()) {
+					item {
+						AnimatedVisibility(
+							modifier = Modifier
+								.fillMaxWidth()
+								.animateItemPlacement(),
+							enter = fadeIn() + expandVertically(),
+							exit = fadeOut() + shrinkVertically(),
+							visible = !state.isNoMore
+						) {
+							Box {
+								CircularProgressIndicator(
+									modifier = Modifier
+										.align(Alignment.Center)
+										.padding(top = 16.dp)
+								)
+							}
 						}
 					}
 				}
@@ -176,8 +180,8 @@ fun BreedsListContent(
 			AnimatedVisibility(
 				modifier = Modifier
 					.align(Alignment.BottomCenter),
-				enter = expandVertically { -it },
-				exit = shrinkVertically { -it },
+				enter = slideInVertically { it },
+				exit = slideOutVertically { it },
 				visible = state.isNoConnection
 			) {
 				ErrorPanel(

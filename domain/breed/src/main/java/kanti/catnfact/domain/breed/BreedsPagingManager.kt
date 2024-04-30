@@ -56,8 +56,8 @@ class BreedsPagingManager @Inject constructor(
 
 	private suspend fun List<String>.getOrderedBreeds(): List<Breed> {
 		val breeds = breedRepository.getLocalBreeds(hashes = this)
-		return map { hash ->
-			breeds.first { breed -> breed.hash == hash }
+		return mapNotNull { hash ->
+			breeds.firstOrNull { breed -> breed.hash == hash }
 		}
 	}
 }

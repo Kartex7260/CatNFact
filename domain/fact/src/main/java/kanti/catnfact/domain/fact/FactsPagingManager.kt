@@ -56,7 +56,7 @@ class FactsPagingManager @Inject constructor(
 				)
 				translatedFacts.runIfNotError { facts ->
 					DataResult.Success(
-						value = paginatedHashes.map { hash -> facts.first { it.hash == hash } }
+						value = paginatedHashes.mapNotNull { hash -> facts.firstOrNull { it.hash == hash } }
 					)
 				}
 			} else

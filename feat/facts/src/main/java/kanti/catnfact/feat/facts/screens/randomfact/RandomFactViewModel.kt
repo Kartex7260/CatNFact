@@ -75,6 +75,7 @@ class RandomFactViewModel @Inject constructor(
 				mIsLoading.value = false
 			}
 			appDataRepository.setLastFactHash(fact.hash)
+			mIsLoading.value = false
 		}
 	}
 
@@ -107,7 +108,6 @@ class RandomFactViewModel @Inject constructor(
 
 	private fun Flow<DataResult<Fact, DataError>>.toUiState(): Flow<FactUiState> {
 		return map { translatedFact ->
-			mIsLoading.value = false
 			translatedFact.value?.toUiState() ?: FactUiState()
 		}
 	}

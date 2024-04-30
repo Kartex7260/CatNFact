@@ -48,8 +48,8 @@ class BreedsListViewModel @Inject constructor(
 	init {
 		viewModelScope.launch(Dispatchers.Default) {
 			mIsLoading.value = true
+			breedsPagingManager.loadLocal()
 			breedsPagingManager.load()
-			mIsLoading.value = false
 		}
 	}
 
@@ -72,7 +72,6 @@ class BreedsListViewModel @Inject constructor(
 		viewModelScope.launch(Dispatchers.Default) {
 			mIsLoading.value = true
 			breedsPagingManager.load()
-			mIsLoading.value = false
 		}
 	}
 
@@ -92,8 +91,11 @@ class BreedsListViewModel @Inject constructor(
 
 	private fun Flow<Any>.getData(): Flow<List<Breed>> {
 		return combine(breedsPagingManager.data) { _, data ->
-			mIsNoConnection.value = data.error is NoConnectionError
-			data.value ?: listOf()
+			if (data.isFinally) {
+				mIsLoading.value = false
+			}
+			mIsNoConnection.value = data.data.error is NoConnectionError
+			data.data.value ?: listOf()
 		}
 	}
 

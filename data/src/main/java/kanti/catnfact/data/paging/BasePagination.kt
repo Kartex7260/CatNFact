@@ -20,6 +20,7 @@ abstract class BasePagination<DataType>(
 
 	private val mutex = Mutex()
 
+	private var isFinally: Boolean = false
 	private var isLocalData: Boolean = false
 	private var page = 1
 
@@ -30,8 +31,11 @@ abstract class BasePagination<DataType>(
 	override val isNoMore: Flow<Boolean> = mIsNoMore.asStateFlow()
 
 	private val updateState = MutableStateFlow(Any())
-	override val data: Flow<DataResult<List<DataType>, DataError>> = updateState
-		.map { getCurrentData() }
+	override val data: Flow<PagingResult<DataType>> = updateState
+		.map {
+			val data = getCurrentData()
+			PagingResult(data = data, isFinally = isFinally)
+		}
 
 	private suspend fun getCurrentData(): DataResult<List<DataType>, DataError> = withContext(context) {
 		mutex.withLock {
@@ -95,6 +99,7 @@ abstract class BasePagination<DataType>(
 
 			page++
 		}
+		isFinally = true
 		updateState.value = Any()
 	}
 

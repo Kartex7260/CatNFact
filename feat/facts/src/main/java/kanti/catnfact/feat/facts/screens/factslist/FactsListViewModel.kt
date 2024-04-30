@@ -76,7 +76,6 @@ class FactsListViewModel @Inject constructor(
 		viewModelScope.launch(Dispatchers.Default) {
 			mIsLoading.value = true
 			factPaging.load()
-			mIsLoading.value = false
 		}
 	}
 
@@ -91,14 +90,16 @@ class FactsListViewModel @Inject constructor(
 			mIsLoading.value = true
 			factPaging.loadLocal()
 			factPaging.load()
-			mIsLoading.value = false
 		}
 	}
 
 	private fun Flow<Any>.getData(): Flow<List<Fact>> {
 		return combine(factPaging.data) { _, data ->
-			mIsNoConnection.value = data.error is NoConnectionError
-			data.value ?: listOf()
+			if (data.isFinally) {
+				mIsLoading.value = false
+			}
+			mIsNoConnection.value = data.data.error is NoConnectionError
+			data.data.value ?: listOf()
 		}
 	}
 

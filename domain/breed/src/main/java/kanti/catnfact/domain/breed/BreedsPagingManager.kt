@@ -7,6 +7,7 @@ import kanti.catnfact.data.model.breed.Breed
 import kanti.catnfact.data.model.breed.BreedRepository
 import kanti.catnfact.data.paging.BasePagination
 import kanti.catnfact.data.paging.Pagination
+import kanti.catnfact.data.paging.PagingResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -26,23 +27,31 @@ class BreedsPagingManager @Inject constructor(
 		}
 	}
 
-	override val data: Flow<DataResult<List<Breed>, DataError>> = pagination.data
+	override val data: Flow<PagingResult<Breed>> = pagination.data
 		.map { dataResult ->
-			val error = dataResult.error
-			val paginatedHashes = dataResult.value
+			val error = dataResult.data.error
+			val paginatedHashes = dataResult.data.value
 
 			if (error != null) {
-				return@map DataResult.Error(
-					error = error,
-					value = paginatedHashes?.getOrderedBreeds()
+				return@map PagingResult(
+					data = DataResult.Error(
+						error = error,
+						value = paginatedHashes?.getOrderedBreeds()
+					),
+					isFinally = true
 				)
 			}
 			if (paginatedHashes == null) {
-				return@map DataResult.Error(ValueIsNullError())
+				return@map PagingResult(
+					data = DataResult.Error(ValueIsNullError()),
+					isFinally = true
+				)
 			}
 
-			DataResult.Success(
-				value = paginatedHashes.getOrderedBreeds()
+			val result: DataResult<List<Breed>, DataError> = DataResult.Success(value = paginatedHashes.getOrderedBreeds())
+			PagingResult(
+				data = result,
+				isFinally = dataResult.isFinally
 			)
 		}
 

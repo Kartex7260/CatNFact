@@ -8,6 +8,7 @@ import kanti.catnfact.data.model.fact.FactRepository
 import kanti.catnfact.data.model.settings.SettingsRepository
 import kanti.catnfact.data.paging.BasePagination
 import kanti.catnfact.data.paging.Pagination
+import kanti.catnfact.data.paging.PagingResult
 import kanti.catnfact.data.runIfNotError
 import kanti.catnfact.domain.fact.translated.GetTranslatedFactsUseCase
 import kotlinx.coroutines.flow.Flow
@@ -33,12 +34,12 @@ class FactsPagingManager @Inject constructor(
 
 	override val isNoMore: Flow<Boolean> = pagination.isNoMore
 
-	override val data: Flow<DataResult<List<Fact>, DataError>> = pagination.data
+	override val data: Flow<PagingResult<Fact>> = pagination.data
 		.combine(settingsRepository.settings) { paginatedData, settings ->
-			val error = paginatedData.error
-			val paginatedHashes = paginatedData.value
+			val error = paginatedData.data.error
+			val paginatedHashes = paginatedData.data.value
 
-			if (error != null) {
+			val result: DataResult<List<Fact>, DataError> = if (error != null) {
 				DataResult.Error(
 					error = error,
 					value = paginatedHashes?.let { hashes ->
@@ -61,6 +62,10 @@ class FactsPagingManager @Inject constructor(
 				}
 			} else
 				DataResult.Error(ValueIsNullError())
+			PagingResult(
+				data = result,
+				isFinally = paginatedData.isFinally
+			)
 		}
 
 	override fun updateData() {

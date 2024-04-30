@@ -2,11 +2,11 @@ package kanti.catnfact.domain.breed
 
 import kanti.catnfact.data.DataError
 import kanti.catnfact.data.DataResult
+import kanti.catnfact.data.ValueIsNullError
 import kanti.catnfact.data.model.breed.Breed
 import kanti.catnfact.data.model.breed.BreedRepository
 import kanti.catnfact.data.paging.BasePagination
 import kanti.catnfact.data.paging.Pagination
-import kanti.catnfact.data.runIfNotError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -28,14 +28,22 @@ class BreedsPagingManager @Inject constructor(
 
 	override val data: Flow<DataResult<List<Breed>, DataError>> = pagination.data
 		.map { dataResult ->
-			dataResult.runIfNotError { hashes ->
-				val breeds = breedRepository.getLocalBreeds(hashes = hashes)
-				DataResult.Success(
-					value = hashes.map { hash ->
-						breeds.first { breed -> breed.hash == hash }
-					}
+			val error = dataResult.error
+			val paginatedHashes = dataResult.value
+
+			if (error != null) {
+				return@map DataResult.Error(
+					error = error,
+					value = paginatedHashes?.getOrderedBreeds()
 				)
 			}
+			if (paginatedHashes == null) {
+				return@map DataResult.Error(ValueIsNullError())
+			}
+
+			DataResult.Success(
+				value = paginatedHashes.getOrderedBreeds()
+			)
 		}
 
 	override val isNoMore: Flow<Boolean> = pagination.isNoMore
@@ -45,4 +53,11 @@ class BreedsPagingManager @Inject constructor(
 	override suspend fun loadLocal() = pagination.loadLocal()
 
 	override suspend fun load() = pagination.load()
+
+	private suspend fun List<String>.getOrderedBreeds(): List<Breed> {
+		val breeds = breedRepository.getLocalBreeds(hashes = this)
+		return map { hash ->
+			breeds.first { breed -> breed.hash == hash }
+		}
+	}
 }

@@ -21,7 +21,7 @@ abstract class BasePagination<DataType>(
 	private val mutex = Mutex()
 
 	private var isLocalData: Boolean = false
-	private var page = 0
+	private var page = 1
 
 	private var mData: MutableList<DataType>? = null
 	private var error: DataError? = null

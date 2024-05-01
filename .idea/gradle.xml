@@ -21,6 +21,8 @@
             <option value="$PROJECT_DIR$/data/breed/impl" />
             <option value="$PROJECT_DIR$/data/breed/impl/retrofit" />
             <option value="$PROJECT_DIR$/data/breed/impl/room" />
+            <option value="$PROJECT_DIR$/data/breed/translated" />
+            <option value="$PROJECT_DIR$/data/breed/translated/api" />
             <option value="$PROJECT_DIR$/data/fact" />
             <option value="$PROJECT_DIR$/data/fact/api" />
             <option value="$PROJECT_DIR$/data/fact/impl" />

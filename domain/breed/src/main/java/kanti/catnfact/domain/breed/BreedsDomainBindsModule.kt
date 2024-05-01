@@ -14,7 +14,6 @@ import javax.inject.Singleton
 interface BreedsDomainBindsModule {
 
 	@Binds
-	@Singleton
 	@BreedsPagingQualifier
 	fun bindBreedsPaginationManager(
 		manager: BreedsPagingManager

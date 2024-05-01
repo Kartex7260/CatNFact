@@ -14,7 +14,6 @@ import javax.inject.Singleton
 interface FactsDomainBindsModule {
 
 	@Binds
-	@Singleton
 	@FactsPagingQualifier
 	fun bindFactsPagingManager(manager: FactsPagingManager): Pagination<Fact>
 }

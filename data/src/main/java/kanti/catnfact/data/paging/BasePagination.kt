@@ -64,8 +64,9 @@ abstract class BasePagination<DataType>(
 			error = null
 
 			mIsNoMore.value = false
-			updateState.value = Any()
+			isFinally = false
 		}
+		updateState.value = Any()
 	}
 
 	override suspend fun load(): Unit = withContext(context) {

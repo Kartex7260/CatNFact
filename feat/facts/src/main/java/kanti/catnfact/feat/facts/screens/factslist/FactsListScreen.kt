@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
@@ -36,6 +37,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -136,6 +138,10 @@ fun FactsListContent(
 		Box(modifier = Modifier.padding(paddingValues)) {
 			LazyColumn(
 				modifier = Modifier.fillMaxSize(),
+				state = rememberSaveable(
+					inputs = arrayOf(state.facts.getOrNull(0)),
+					saver = LazyListState.Saver
+				) { LazyListState(0, 0) },
 				verticalArrangement = Arrangement.spacedBy(8.dp),
 				contentPadding = PaddingValues(vertical = 12.dp, horizontal = 16.dp)
 			) {

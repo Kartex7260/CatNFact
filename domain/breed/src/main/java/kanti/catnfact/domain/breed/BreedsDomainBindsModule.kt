@@ -7,7 +7,6 @@ import dagger.hilt.components.SingletonComponent
 import kanti.catnfact.data.model.breed.Breed
 import kanti.catnfact.data.paging.Pagination
 import javax.inject.Qualifier
-import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)

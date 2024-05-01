@@ -16,5 +16,9 @@ interface TranslatedBreedLocalDataSource {
 		targetLocaleCode: String
 	): List<BreedData>
 
-	suspend fun insert(breeds: List<BreedData>)
+	suspend fun insert(
+		breeds: List<BreedData>,
+		fromLocaleCode: String,
+		targetLocaleCode: String
+	)
 }

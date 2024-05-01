@@ -41,7 +41,11 @@ class TranslatedBreedRepositoryImpl @Inject constructor(
 
 			val value = remoteTranslated.value ?: return@withContext DataResult
 				.Error(ValueIsNullError("${this::class.qualifiedName}: remoteTranslated"))
-			localDataSource.insert(value)
+			localDataSource.insert(
+				breeds = value,
+				fromLocaleCode = fromLocaleCode,
+				targetLocaleCode = targetLocaleCode
+			)
 		}
 
 		val translatedBreeds = getTranslated(

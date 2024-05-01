@@ -39,4 +39,5 @@ dependencies {
 	implementation(project(":data"))
 	implementation(project(":data:breed:api"))
 	implementation(project(":data:breed:translated:api"))
+	implementation(project(":data:settings:api"))
 }

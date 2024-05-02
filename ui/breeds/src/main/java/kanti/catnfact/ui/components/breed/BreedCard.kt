@@ -28,9 +28,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -82,64 +79,71 @@ fun BreedCard(
 				) {
 					Column {
 						Spacer(modifier = Modifier.height(4.dp))
-						Text(
-							text = "${strings.origin}: ${state.origin}",
-							style = MaterialTheme.typography.bodyMedium,
-							maxLines = maxLineFromExpand(),
-							overflow = TextOverflow.Ellipsis
-						)
-						Spacer(modifier = Modifier.height(4.dp))
-						Text(
-							text = "${strings.coat}: ${state.coat}",
-							style = MaterialTheme.typography.bodyMedium,
-							maxLines = maxLineFromExpand(),
-							overflow = TextOverflow.Ellipsis
-						)
-						Spacer(modifier = Modifier.height(4.dp))
-						Text(
-							text = "${strings.pattern}: ${state.pattern}",
-							style = MaterialTheme.typography.bodyMedium,
-							maxLines = maxLineFromExpand(),
-							overflow = TextOverflow.Ellipsis
-						)
-						Spacer(modifier = Modifier.height(4.dp))
-					}
-				}
-				
-				Row(
-					verticalAlignment = Alignment.CenterVertically
-				) {
-					Box(
-						modifier = Modifier
-							.weight(1f, false)
-					) {
-						androidx.compose.animation.AnimatedVisibility(
-							visible = state.isExpand,
-							enter = fadeIn() + expandHorizontally(),
-							exit = fadeOut() + shrinkHorizontally()
-						) {
+						if (state.origin.isNotBlank()) {
 							Text(
-								text = "${strings.country}: ${state.country}",
-								color = MaterialTheme.colorScheme.onSurfaceVariant,
-								style = MaterialTheme.typography.bodySmall
-							)
-						}
-						androidx.compose.animation.AnimatedVisibility(
-							visible = !state.isExpand,
-							enter = fadeIn(),
-							exit = fadeOut()
-						) {
-							Text(
-								text = state.country,
-								color = MaterialTheme.colorScheme.onSurfaceVariant,
-								style = MaterialTheme.typography.bodySmall,
-								maxLines = 1,
+								text = "${strings.origin}: ${state.origin}",
+								style = MaterialTheme.typography.bodyMedium,
+								maxLines = maxLineFromExpand(),
 								overflow = TextOverflow.Ellipsis
 							)
+							Spacer(modifier = Modifier.height(4.dp))
+						}
+						if (state.coat.isNotBlank()) {
+							Text(
+								text = "${strings.coat}: ${state.coat}",
+								style = MaterialTheme.typography.bodyMedium,
+								maxLines = maxLineFromExpand(),
+								overflow = TextOverflow.Ellipsis
+							)
+							Spacer(modifier = Modifier.height(4.dp))
+						}
+						if (state.pattern.isNotBlank()) {
+							Text(
+								text = "${strings.pattern}: ${state.pattern}",
+								style = MaterialTheme.typography.bodyMedium,
+								maxLines = maxLineFromExpand(),
+								overflow = TextOverflow.Ellipsis
+							)
+							Spacer(modifier = Modifier.height(4.dp))
 						}
 					}
+				}
 
-					Spacer(modifier = Modifier.width(4.dp))
+				Row {
+					if (state.country.isNotBlank()) {
+						Box(
+							modifier = Modifier
+								.weight(1f, false)
+								.align(Alignment.CenterVertically)
+						) {
+							androidx.compose.animation.AnimatedVisibility(
+								visible = state.isExpand,
+								enter = fadeIn() + expandHorizontally(),
+								exit = fadeOut() + shrinkHorizontally()
+							) {
+								Text(
+									text = "${strings.country}: ${state.country}",
+									color = MaterialTheme.colorScheme.onSurfaceVariant,
+									style = MaterialTheme.typography.bodySmall
+								)
+							}
+							androidx.compose.animation.AnimatedVisibility(
+								visible = !state.isExpand,
+								enter = fadeIn(),
+								exit = fadeOut()
+							) {
+								Text(
+									text = state.country,
+									color = MaterialTheme.colorScheme.onSurfaceVariant,
+									style = MaterialTheme.typography.bodySmall,
+									maxLines = 1,
+									overflow = TextOverflow.Ellipsis
+								)
+							}
+						}
+						Spacer(modifier = Modifier.width(4.dp))
+					}
+
 					val rotateAnimate by animateFloatAsState(
 						targetValue = if (state.isExpand) 180f else 0f,
 						animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
@@ -147,7 +151,8 @@ fun BreedCard(
 					)
 					Icon(
 						modifier = Modifier
-							.rotate(rotateAnimate),
+							.rotate(rotateAnimate)
+							.align(Alignment.Bottom),
 						imageVector = Icons.Default.KeyboardArrowDown,
 						contentDescription = null
 					)
@@ -194,18 +199,15 @@ object BreedCardDefault {
 
 @PreviewLightDark
 @Composable
-private fun PreviewBreedCard(
+private fun PreviewBreedCard2(
 	@PreviewParameter(Breeds::class) breed: BreedUiState
 ) {
 	CatNFactTheme {
 		Surface {
-			var isExpand by remember { mutableStateOf(false) }
 			Box(modifier = Modifier.padding(16.dp)) {
 				BreedCard(
-					state = breed.copy(
-						isExpand = isExpand
-					),
-					onChangeExpand = { isExpand = it }
+					state = breed,
+					onChangeExpand = { }
 				)
 			}
 		}
@@ -217,23 +219,57 @@ class Breeds : CollectionPreviewParameterProvider<BreedUiState>(
 		BreedUiState(
 			hash = "1",
 
-			breed = "Asian Semi-longhair",
-			country = "United Kingdom",
+			breed = "Balinese",
+			country = "developed in the United States (founding stock from Thailand)",
 			origin = "Crossbreed",
-			coat = "Semi-long",
-			pattern = "Solid",
+			coat = "Long",
+			pattern = "Colorpoint",
 
-			isExpand = false,
-			isFavourite = true
+			isExpand = true
 		),
 		BreedUiState(
 			hash = "2",
 
 			breed = "Balinese",
 			country = "developed in the United States (founding stock from Thailand)",
+			origin = "",
+			coat = "Long",
+			pattern = "Colorpoint",
+
+			isExpand = true
+		),
+		BreedUiState(
+			hash = "3",
+
+			breed = "Balinese",
+			country = "developed in the United States (founding stock from Thailand)",
 			origin = "Crossbreed",
 			coat = "Long",
-			pattern = "Colorpoint"
+			pattern = "",
+
+			isExpand = true
+		),
+		BreedUiState(
+			hash = "4",
+
+			breed = "Balinese",
+			country = "developed in the United States (founding stock from Thailand)",
+			origin = "Crossbreed",
+			coat = "",
+			pattern = "Colorpoint",
+
+			isExpand = true
+		),
+		BreedUiState(
+			hash = "5",
+
+			breed = "Balinese",
+			country = "",
+			origin = "Crossbreed",
+			coat = "Long",
+			pattern = "Colorpoint",
+
+			isExpand = true
 		)
 	)
 )

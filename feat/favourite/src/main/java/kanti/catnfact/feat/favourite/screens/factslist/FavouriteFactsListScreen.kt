@@ -73,7 +73,8 @@ fun FavouriteFactsListContent(
 			contentPadding = PaddingValues(vertical = 12.dp, horizontal = 16.dp)
 		) {
 			items(
-				count = state.facts.size
+				count = state.facts.size,
+				key = { index -> state.facts[index].hash }
 			) { index ->
 				val factUiState = state.facts[index]
 				FactCard(

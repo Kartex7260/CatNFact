@@ -46,6 +46,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LifecycleStartEffect
 import kanti.catnfact.feat.breeds.R
 import kanti.catnfact.ui.components.breed.BreedCard
 import kanti.catnfact.ui.components.breed.BreedCardDefault
@@ -60,6 +61,12 @@ fun BreedsListScreen(
 ) {
 	val viewModel = hiltViewModel<BreedsListViewModel>()
 	val state by viewModel.breedsUiState.collectAsState()
+
+	LifecycleStartEffect(viewModel) {
+		if (state.isNoConnection)
+			viewModel.onAction(OnRefreshIntent)
+		onStopOrDispose {  }
+	}
 
 	BreedsListContent(
 		state = state,

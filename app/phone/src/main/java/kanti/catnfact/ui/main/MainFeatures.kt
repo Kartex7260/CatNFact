@@ -1,5 +1,7 @@
 package kanti.catnfact.ui.main
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Icon
@@ -31,7 +33,11 @@ fun MainFeatures(
 				.fillMaxWidth()
 				.weight(1f),
 			navController = navController,
-			startDestination = FeatDestinations.FACTS
+			startDestination = FeatDestinations.FACTS,
+			enterTransition = { EnterTransition.None },
+			exitTransition = { ExitTransition.None },
+			popEnterTransition = { EnterTransition.None },
+			popExitTransition = { ExitTransition.None }
 		) {
 			composable(
 				route = FeatDestinations.FACTS
@@ -55,29 +61,33 @@ fun MainFeatures(
 			}
 		}
 		NavigationBar {
-			navItems.forEach {
+			navItems.forEach { navItem ->
 				val currentNavBackStackEntry by navController.currentBackStackEntryAsState()
+				val currentRoute = currentNavBackStackEntry?.destination?.route
 
 				NavigationBarItem(
-					selected = currentNavBackStackEntry?.destination?.route == it.route,
-					onClick = {
-						navController.navigateUp()
-						navController.navigate(route = it.route) {
-							popUpTo(route = it.route) {
-								inclusive = false
-								saveState = true
+					selected = currentRoute == navItem.route,
+					onClick = onClick@{
+						if (currentRoute == navItem.route)
+							return@onClick
+						navController.navigate(route = navItem.route) {
+							currentRoute?.let {
+								popUpTo(route = it) {
+									inclusive = true
+									saveState = true
+								}
 							}
-							launchSingleTop = true
+							restoreState = true
 						}
 					},
 					icon = {
 						Icon(
-							painter = painterResource(id = it.iconId),
+							painter = painterResource(id = navItem.iconId),
 							contentDescription = null
 						)
 					},
 					label = {
-						Text(text = stringResource(id = it.titleId))
+						Text(text = stringResource(id = navItem.titleId))
 					}
 				)
 			}

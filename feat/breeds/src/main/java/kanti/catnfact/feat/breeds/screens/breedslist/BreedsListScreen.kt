@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -115,6 +116,10 @@ fun BreedsListContent(
 		) {
 			LazyColumn(
 				modifier = Modifier.fillMaxSize(),
+				state = rememberSaveable(
+					inputs = arrayOf(state.breeds.getOrNull(0)),
+					saver = LazyListState.Saver
+				) { LazyListState() },
 				contentPadding = PaddingValues(vertical = 12.dp, horizontal = 16.dp),
 				verticalArrangement = Arrangement.spacedBy(8.dp)
 			) {

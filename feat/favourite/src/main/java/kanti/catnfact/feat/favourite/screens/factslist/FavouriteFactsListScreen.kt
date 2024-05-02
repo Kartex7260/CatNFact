@@ -18,12 +18,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import kanti.catnfact.feat.favourite.R
 import kanti.catnfact.ui.components.error.ErrorPanel
 import kanti.catnfact.ui.components.error.ErrorState
@@ -35,10 +37,13 @@ import kanti.catnfact.ui.theme.CatNFactTheme
 fun FavouriteFactsListScreen(
 	modifier: Modifier = Modifier
 ) {
+	val viewModel = hiltViewModel<FavouriteFactsListViewModel>()
+	val state by viewModel.factsUiState.collectAsState()
+
 	FavouriteFactsListContent(
 		modifier = modifier,
-		state = FavouriteFactsListUiState(),
-		onFactAction = {}
+		state = state,
+		onFactAction = viewModel::onFactAction
 	)
 }
 

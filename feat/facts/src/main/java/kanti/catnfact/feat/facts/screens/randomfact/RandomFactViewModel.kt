@@ -57,6 +57,10 @@ class RandomFactViewModel @Inject constructor(
 		onNextRandomFact()
 	}
 
+	fun updateData() {
+		updateState.value = Any()
+	}
+
 	fun onAction(intent: RandomFactIntent) {
 		when (intent) {
 			is OnNextRandomFactIntent -> onNextRandomFact()

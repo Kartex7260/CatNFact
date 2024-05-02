@@ -49,6 +49,13 @@ class FavouriteFactsListViewModel @Inject constructor(
 		init()
 	}
 
+	fun updateData() {
+		viewModelScope.launch(Dispatchers.Default) {
+			pagingManager.loadLocal()
+			pagingManager.load()
+		}
+	}
+
 	fun onFactAction(intent: FactIntent) {
 		when (intent) {
 			is OnChangeExpandIntent -> onChangeExpand(intent)

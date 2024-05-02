@@ -64,6 +64,8 @@ fun RandomFactScreen(
 	LifecycleStartEffect(viewModel) {
 		if (state.isNoConnection)
 			viewModel.onAction(OnNextRandomFactIntent)
+		else
+			viewModel.updateData()
 		onStopOrDispose {  }
 	}
 

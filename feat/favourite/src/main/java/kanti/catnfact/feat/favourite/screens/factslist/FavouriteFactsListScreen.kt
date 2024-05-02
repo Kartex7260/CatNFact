@@ -26,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LifecycleStartEffect
 import kanti.catnfact.feat.favourite.R
 import kanti.catnfact.ui.components.error.ErrorPanel
 import kanti.catnfact.ui.components.error.ErrorState
@@ -39,6 +40,14 @@ fun FavouriteFactsListScreen(
 ) {
 	val viewModel = hiltViewModel<FavouriteFactsListViewModel>()
 	val state by viewModel.factsUiState.collectAsState()
+
+	LifecycleStartEffect(viewModel) {
+		if (state.isNoConnection)
+			viewModel.onFactAction(OnRefreshIntent)
+		else
+			viewModel.updateData()
+		onStopOrDispose {  }
+	}
 
 	FavouriteFactsListContent(
 		modifier = modifier,

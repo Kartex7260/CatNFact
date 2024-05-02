@@ -49,6 +49,10 @@ class FactsListViewModel @Inject constructor(
 		initialLoad()
 	}
 
+	fun updateData() {
+		factPaging.updateData()
+	}
+
 	fun onFactAction(intent: FactIntent) {
 		when (intent) {
 			is OnChangeExpandIntent -> onChangeExpand(intent)

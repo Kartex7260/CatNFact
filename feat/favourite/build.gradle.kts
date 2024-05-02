@@ -49,7 +49,7 @@ dependencies {
 	implementation(libs.androidx.lifecycle.compose)
 
 	implementation(libs.compose.ui.tooling.preview)
-	debugAnnotationProcessor(libs.compose.ui.tooling)
+	debugImplementation(libs.compose.ui.tooling)
 
 	implementation(libs.dagger.hilt.android)
 	kapt(libs.dagger.hilt.android.compiler)

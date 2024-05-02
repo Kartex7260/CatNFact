@@ -15,6 +15,10 @@ class FactRepositoryImpl @Inject constructor(
 	private val remoteDataSource: FactRemoteDataSource
 ) : FactRepository {
 
+	override suspend fun localFavouritesFacts(page: Int, limit: Int): List<String> {
+		return localDataSource.loadFavouriteFacts(page = page, limit = limit)
+	}
+
 	override suspend fun getFact(hash: String): DataResult<Fact, LocalError> {
 		return localDataSource.getFact(hash)
 	}

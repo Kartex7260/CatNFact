@@ -13,6 +13,11 @@ class FactRoomDataSource @Inject constructor(
 	private val factDao: FactDao
 ) : FactLocalDataSource {
 
+	override suspend fun loadFavouriteFacts(page: Int, limit: Int): List<String> {
+		val offset = page - 1 * limit
+		return factDao.getHashes(limit = limit, offset = offset)
+	}
+
 	override suspend fun getFact(hash: String): DataResult<Fact, LocalError> {
 		return withContext(Dispatchers.Default) {
 			val fact = factDao.getFact(hash)

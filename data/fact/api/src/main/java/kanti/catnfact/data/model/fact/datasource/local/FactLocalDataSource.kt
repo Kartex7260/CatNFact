@@ -6,6 +6,8 @@ import kanti.catnfact.data.model.fact.Fact
 
 interface FactLocalDataSource {
 
+	suspend fun loadFavouriteFacts(page: Int, limit: Int): List<String>
+
 	suspend fun getFact(hash: String): DataResult<Fact, LocalError>
 
 	suspend fun insert(fact: Fact)

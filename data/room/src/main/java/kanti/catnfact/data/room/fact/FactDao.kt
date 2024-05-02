@@ -8,6 +8,9 @@ import androidx.room.Query
 @Dao
 interface FactDao {
 
+	@Query("SELECT hash FROM facts WHERE is_favourite = 1 LIMIT :limit OFFSET :offset")
+	suspend fun getHashes(limit: Int, offset: Int): List<String>
+
 	@Query("SELECT hash FROM facts LIMIT :limit")
 	suspend fun getAllHashes(limit: Int): List<String>
 

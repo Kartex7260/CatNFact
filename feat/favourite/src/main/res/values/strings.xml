@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <string name="favourites">Favourites</string>
+
+    <string name="facts">Facts</string>
+    <string name="breeds">Breeds</string>
+
+    <string name="settings">Settings</string>
+    
+</resources>

@@ -21,6 +21,7 @@ import androidx.navigation.compose.rememberNavController
 import kanti.catnfact.R
 import kanti.catnfact.feat.breeds.BreedsNavHost
 import kanti.catnfact.feat.facts.FactsNavHost
+import kanti.catnfact.feat.favourite.FavouriteScreen
 
 @Composable
 fun MainFeatures(
@@ -58,6 +59,9 @@ fun MainFeatures(
 			composable(
 				route = FeatDestinations.FAVOURITES
 			) {
+				FavouriteScreen(
+					onNavigateToSettings = toSettings
+				)
 			}
 		}
 		NavigationBar {

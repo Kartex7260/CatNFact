@@ -1,6 +1,7 @@
 package kanti.catnfact.feat.facts.screens.factslist
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -27,6 +28,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -66,7 +68,7 @@ fun FactsListScreen(
 	LifecycleStartEffect(viewModel) {
 		if (state.isNoConnection)
 			viewModel.onFactAction(OnRefreshIntent)
-		onStopOrDispose {  }
+		onStopOrDispose { }
 	}
 
 	FactsListContent(
@@ -164,23 +166,28 @@ fun FactsListContent(
 					}
 				}
 
-				if (state.facts.isNotEmpty()) {
-					item {
-						AnimatedVisibility(
-							modifier = Modifier
-								.fillMaxWidth()
-								.animateItemPlacement(),
-							enter = fadeIn() + expandVertically(),
-							exit = fadeOut() + shrinkVertically(),
-							visible = !state.isNoMore
-						) {
-							Box {
-								CircularProgressIndicator(
-									modifier = Modifier
-										.align(Alignment.Center)
-										.padding(top = 16.dp)
-								)
-							}
+				item {
+					AnimatedVisibility(
+						modifier = Modifier
+							.fillMaxWidth()
+							.animateItemPlacement(),
+						enter = fadeIn() + expandVertically(),
+						exit = fadeOut() + shrinkVertically(),
+						visible = !state.isNoMore
+					) {
+						Box {
+							val color = if (state.isLoading) MaterialTheme.colorScheme.surface
+							else MaterialTheme.colorScheme.primary
+							val animatedColor by animateColorAsState(
+								targetValue = color,
+								label = "progressColor"
+							)
+							CircularProgressIndicator(
+								modifier = Modifier
+									.align(Alignment.Center)
+									.padding(top = 16.dp),
+								color = animatedColor
+							)
 						}
 					}
 				}

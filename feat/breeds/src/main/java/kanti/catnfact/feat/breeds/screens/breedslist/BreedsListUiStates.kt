@@ -8,5 +8,5 @@ data class BreedsListUiState(
 	val breeds: List<BreedUiState> = listOf(),
 	val isLoading: Boolean = false,
 	val isNoConnection: Boolean = false,
-	val isNoMore: Boolean = false
+	val isNoMore: Boolean = true
 )

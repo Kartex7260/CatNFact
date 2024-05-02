@@ -14,7 +14,7 @@ class FactRoomDataSource @Inject constructor(
 ) : FactLocalDataSource {
 
 	override suspend fun loadFavouriteFacts(page: Int, limit: Int): List<String> {
-		val offset = page - 1 * limit
+		val offset = (page - 1) * limit
 		return factDao.getHashes(limit = limit, offset = offset)
 	}
 

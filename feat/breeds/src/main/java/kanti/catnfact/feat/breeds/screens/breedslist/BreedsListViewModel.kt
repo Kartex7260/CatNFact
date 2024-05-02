@@ -46,6 +46,10 @@ class BreedsListViewModel @Inject constructor(
 		)
 
 	init {
+		init()
+	}
+
+	private fun init() {
 		viewModelScope.launch(Dispatchers.Default) {
 			mIsLoading.value = true
 			breedsPagingManager.loadLocal()

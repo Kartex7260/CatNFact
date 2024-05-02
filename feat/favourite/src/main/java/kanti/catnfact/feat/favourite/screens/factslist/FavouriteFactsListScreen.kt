@@ -6,6 +6,8 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,7 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleStartEffect
@@ -127,21 +129,22 @@ fun FavouriteFactsListContent(
 		AnimatedVisibility(
 			modifier = Modifier.align(Alignment.BottomCenter),
 			visible = state.isNoConnection,
-			enter = expandVertically { it },
-			exit = shrinkVertically { it }
+			enter = slideInVertically { it },
+			exit = slideOutVertically { it }
 		) {
 			ErrorPanel(
 				state = ErrorState(
 					title = stringResource(id = R.string.no_connection),
 					callbackLabel = stringResource(id = R.string.refresh)
 				),
+				enabledCallback = !state.isLoading,
 				onCallback = { onFactAction(OnRefreshIntent) }
 			)
 		}
 	}
 }
 
-@Preview
+@PreviewLightDark
 @Composable
 private fun PreviewFavouriteFactsListContent() {
 	CatNFactTheme {

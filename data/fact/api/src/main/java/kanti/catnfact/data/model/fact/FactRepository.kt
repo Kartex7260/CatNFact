@@ -6,6 +6,9 @@ import kanti.catnfact.data.LocalError
 
 interface FactRepository {
 
+	suspend fun localFavouritesFacts(page: Int, limit: Int): List<String>
+
+
 	suspend fun getFact(hash: String): DataResult<Fact, LocalError>
 
 	suspend fun getRandomFact(): DataResult<Fact, DataError>

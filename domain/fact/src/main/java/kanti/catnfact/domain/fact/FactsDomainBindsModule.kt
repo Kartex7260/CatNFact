@@ -15,8 +15,16 @@ interface FactsDomainBindsModule {
 	@Binds
 	@FactsPagingQualifier
 	fun bindFactsPagingManager(manager: FactsPagingManager): Pagination<Fact>
+
+	@Binds
+	@FavouriteFactsPagingQualifier
+	fun bindFavouriteFactsPagingManager(manager: FavouriteFactsPagingManager): Pagination<Fact>
 }
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class FactsPagingQualifier
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class FavouriteFactsPagingQualifier

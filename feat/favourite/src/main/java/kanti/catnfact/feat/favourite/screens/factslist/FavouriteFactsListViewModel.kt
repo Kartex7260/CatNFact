@@ -7,6 +7,7 @@ import kanti.catnfact.data.NoConnectionError
 import kanti.catnfact.data.model.fact.Fact
 import kanti.catnfact.data.model.fact.FactRepository
 import kanti.catnfact.data.paging.Pagination
+import kanti.catnfact.domain.fact.FavouriteFactsPagingQualifier
 import kanti.catnfact.feat.favourite.toUiState
 import kanti.catnfact.ui.components.ExpanderManager
 import kanti.catnfact.ui.components.fact.FactUiState
@@ -25,7 +26,7 @@ import javax.inject.Inject
 @HiltViewModel
 class FavouriteFactsListViewModel @Inject constructor(
 	private val factRepository: FactRepository,
-	private val pagingManager: Pagination<Fact>,
+	@FavouriteFactsPagingQualifier private val pagingManager: Pagination<Fact>,
 	private val expanderManager: ExpanderManager
 ) : ViewModel() {
 

@@ -1,5 +1,8 @@
 package kanti.catnfact.feat.favourite
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -18,6 +21,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -78,6 +82,14 @@ fun FavouriteScreen(
 			val currentRoute = navController.currentBackStackEntryAsState()
 				.value?.destination?.route
 
+			val elevation = if (scrollBehavior.state.overlappedFraction > 0.01f) 3.dp else 0.dp
+			val color = MaterialTheme.colorScheme.surfaceColorAtElevation(elevation)
+			val appBarContainerColor by animateColorAsState(
+				targetValue = color,
+				animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
+				label = "tabsColor"
+			)
+
 			PrimaryTabRow(
 				selectedTabIndex = run {
 					val index = tabs.indexOfFirst { it.route == currentRoute }
@@ -85,6 +97,7 @@ fun FavouriteScreen(
 						return@run 1
 					index
 				},
+				containerColor = appBarContainerColor,
 				divider = { HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant) }
 			) {
 				tabs.forEach { tabContent ->

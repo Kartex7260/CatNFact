@@ -20,12 +20,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LifecycleStartEffect
 import kanti.catnfact.feat.favourite.R
 import kanti.catnfact.ui.components.breed.BreedCard
 import kanti.catnfact.ui.components.breed.BreedCardDefault
@@ -38,10 +41,18 @@ import kanti.catnfact.ui.theme.CatNFactTheme
 fun FavouriteBreedsListScreen(
 	modifier: Modifier = Modifier
 ) {
+	val viewModel = hiltViewModel<FavouriteBreedsListViewModel>()
+	val state by viewModel.breedsUiState.collectAsState()
+
+	LifecycleStartEffect {
+		viewModel.onScreenAction(OnStartIntent)
+		onStopOrDispose {  }
+	}
+
 	FavouriteBreedsListContent(
 		modifier = modifier,
-		state = FavouriteBreedsListUiState(),
-		onBreedAction = {}
+		state = state,
+		onBreedAction = viewModel::onBreedAction
 	)
 }
 

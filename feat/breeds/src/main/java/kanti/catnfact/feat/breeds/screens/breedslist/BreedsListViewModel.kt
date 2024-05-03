@@ -57,13 +57,27 @@ class BreedsListViewModel @Inject constructor(
 		}
 	}
 
-	fun onAction(intent: BreedsIntent) {
+	fun onScreenAction(intent: ScreenIntent) {
+		when (intent) {
+			is OnStartIntent -> onStart()
+			else -> {}
+		}
+	}
+
+	fun onBreedAction(intent: BreedsIntent) {
 		when (intent) {
 			is OnAppendContentIntent -> onAppendContent()
 			is OnRefreshIntent -> onRefreshIntent()
 			is OnChangeExpandIntent -> onChangeExpand(intent)
 			is OnChangeFavouriteIntent -> onChangeFavourite(intent)
 		}
+	}
+
+	private fun onStart() {
+		if (breedsUiState.value.isNoConnection)
+			onBreedAction(OnRefreshIntent)
+		else
+			breedsPagingManager.updateData()
 	}
 
 	private fun onAppendContent() {

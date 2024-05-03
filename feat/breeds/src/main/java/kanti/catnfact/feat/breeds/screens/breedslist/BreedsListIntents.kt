@@ -4,6 +4,8 @@ sealed interface ScreenIntent
 
 internal data object ToSettingsIntent : ScreenIntent
 
+internal data object OnStartIntent : ScreenIntent
+
 sealed interface BreedsIntent
 
 internal data object OnAppendContentIntent : BreedsIntent

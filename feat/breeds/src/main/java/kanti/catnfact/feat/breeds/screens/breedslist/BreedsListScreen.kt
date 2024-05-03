@@ -63,8 +63,7 @@ fun BreedsListScreen(
 	val state by viewModel.breedsUiState.collectAsState()
 
 	LifecycleStartEffect(viewModel) {
-		if (state.isNoConnection)
-			viewModel.onAction(OnRefreshIntent)
+		viewModel.onScreenAction(OnStartIntent)
 		onStopOrDispose {  }
 	}
 
@@ -73,9 +72,11 @@ fun BreedsListScreen(
 		onScreenAction = { intent ->
 			when (intent) {
 				is ToSettingsIntent -> toSettings()
+				else -> {}
 			}
+			viewModel.onScreenAction(intent)
 		},
-		onBreedsAction = viewModel::onAction
+		onBreedsAction = viewModel::onBreedAction
 	)
 }
 

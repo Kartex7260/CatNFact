@@ -17,8 +17,18 @@ interface BreedsDomainBindsModule {
 	fun bindBreedsPaginationManager(
 		manager: BreedsPagingManager
 	): Pagination<Breed>
+
+	@Binds
+	@FavouriteBreedsPagingQualifier
+	fun bindFavouriteBreedsPaginationManager(
+		manager: FavouriteBreedsPagingManager
+	): Pagination<Breed>
 }
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class BreedsPagingQualifier
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class FavouriteBreedsPagingQualifier

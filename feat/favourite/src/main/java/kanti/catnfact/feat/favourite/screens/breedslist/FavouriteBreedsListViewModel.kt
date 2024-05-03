@@ -7,6 +7,7 @@ import kanti.catnfact.data.NoConnectionError
 import kanti.catnfact.data.model.breed.Breed
 import kanti.catnfact.data.model.breed.BreedRepository
 import kanti.catnfact.data.paging.Pagination
+import kanti.catnfact.domain.breed.FavouriteBreedsPagingQualifier
 import kanti.catnfact.feat.favourite.toUiState
 import kanti.catnfact.ui.components.ExpanderManager
 import kanti.catnfact.ui.components.breed.BreedUiState
@@ -25,7 +26,7 @@ import javax.inject.Inject
 @HiltViewModel
 class FavouriteBreedsListViewModel @Inject constructor(
 	private val breedRepository: BreedRepository,
-	private val pagination: Pagination<Breed>,
+	@FavouriteBreedsPagingQualifier private val pagination: Pagination<Breed>,
 	private val expanderManager: ExpanderManager
 ) : ViewModel() {
 

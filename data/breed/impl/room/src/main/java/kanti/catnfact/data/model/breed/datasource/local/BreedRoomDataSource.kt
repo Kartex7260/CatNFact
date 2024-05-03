@@ -8,12 +8,17 @@ class BreedRoomDataSource @Inject constructor(
 	private val breedDao: BreedDao
 ) : BreedLocalDataSource {
 
+	override suspend fun getFavouriteBreedHashes(page: Int, limit: Int): List<String> {
+		val offset = (page - 1) * limit
+		return breedDao.getFavouriteBreedsHashes(limit = limit, offset = offset)
+	}
+
 	override suspend fun changeFavourite(hash: String) {
 		breedDao.changeFavourite(hash = hash)
 	}
 
 	override suspend fun getBreedsHashes(limit: Int): List<String> {
-		return breedDao.getBreedsHashes(limit = limit)
+		return breedDao.getAllBreedsHashes(limit = limit)
 	}
 
 	override suspend fun getBreeds(hashes: List<String>): List<Breed> {

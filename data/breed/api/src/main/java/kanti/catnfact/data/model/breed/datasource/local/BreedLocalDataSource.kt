@@ -4,6 +4,8 @@ import kanti.catnfact.data.model.breed.Breed
 
 interface BreedLocalDataSource {
 
+	suspend fun getFavouriteBreedHashes(page: Int, limit: Int): List<String>
+
 	suspend fun changeFavourite(hash: String)
 
 	suspend fun getBreedsHashes(limit: Int): List<String>

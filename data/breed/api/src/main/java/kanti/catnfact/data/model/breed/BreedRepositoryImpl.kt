@@ -14,6 +14,10 @@ class BreedRepositoryImpl @Inject constructor(
 	private val remoteDataSource: BreedRemoteDataSource
 ) : BreedRepository {
 
+	override suspend fun getLocalFavouriteBreedHashes(page: Int, limit: Int): List<String> {
+		return localDataSource.getFavouriteBreedHashes(page = page, limit = limit)
+	}
+
 	override suspend fun changeFavourite(hash: String) {
 		localDataSource.changeFavourite(hash)
 	}

@@ -32,6 +32,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import kanti.catnfact.feat.favourite.screens.breedslist.FavouriteBreedsListScreen
 import kanti.catnfact.feat.favourite.screens.factslist.FavouriteFactsListScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -110,11 +111,11 @@ fun FavouriteScreen(
 				startDestination = FavouriteDestinations.FACTS
 			) {
 				composable(route = FavouriteDestinations.FACTS) {
-					FavouriteFactsListScreen(
-						modifier = Modifier.fillMaxSize()
-					)
+					FavouriteFactsListScreen(modifier = Modifier.fillMaxSize())
 				}
-				composable(route = FavouriteDestinations.BREEDS) {}
+				composable(route = FavouriteDestinations.BREEDS) {
+					FavouriteBreedsListScreen(modifier = Modifier.fillMaxSize())
+				}
 			}
 		}
 	}

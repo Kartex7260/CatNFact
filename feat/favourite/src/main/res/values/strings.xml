@@ -10,5 +10,10 @@
 
     <string name="no_connection">There is no internet connection</string>
     <string name="refresh">Refresh</string>
+
+    <string name="origin">Origin</string>
+    <string name="coat">Coat</string>
+    <string name="pattern">Pattern</string>
+    <string name="country">Country</string>
     
 </resources>

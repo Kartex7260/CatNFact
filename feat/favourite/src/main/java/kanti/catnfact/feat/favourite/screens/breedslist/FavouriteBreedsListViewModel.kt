@@ -65,7 +65,7 @@ class FavouriteBreedsListViewModel @Inject constructor(
 	}
 
 	private fun init() {
-		viewModelScope.launch(Dispatchers.Default) {
+		viewModelScope.launch {
 			mIsLoading.value = true
 			pagination.load()
 		}
@@ -74,12 +74,16 @@ class FavouriteBreedsListViewModel @Inject constructor(
 	private fun onStart() {
 		if (breedsUiState.value.isNoConnection)
 			onBreedAction(OnRefreshIntent)
-		else
-			pagination.updateData()
+		else {
+			viewModelScope.launch {
+				pagination.loadLocal()
+				pagination.load()
+			}
+		}
 	}
 
 	private fun onChangeFavourite(intent: OnChangeFavouriteIntent) {
-		viewModelScope.launch(Dispatchers.Default) {
+		viewModelScope.launch {
 			breedRepository.changeFavourite(hash = intent.hash)
 			pagination.updateData()
 		}
@@ -106,7 +110,7 @@ class FavouriteBreedsListViewModel @Inject constructor(
 	private fun Flow<Any>.getData(): Flow<List<Breed>> {
 		return combine(pagination.data) { _, data ->
 			if (data.isFinally) {
-				mIsLoading.value = true
+				mIsLoading.value = false
 			}
 			mIsNoConnection.value = data.data.error is NoConnectionError
 			data.data.value ?: listOf()

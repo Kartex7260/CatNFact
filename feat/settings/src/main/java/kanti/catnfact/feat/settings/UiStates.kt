@@ -10,7 +10,14 @@ import kanti.catnfact.ui.components.settings.DarkModeUiState
 data class UiSettingsUiState(
 	val darkMode: DarkModeUiState = DarkModeUiState.AsSystem,
 	val colorStyle: ColorStyleUiState = ColorStyleUiState.CatNFact,
-	val autoTranslate: Boolean = false
+	val autoTranslate: AutoTranslateUiState = AutoTranslateUiState()
+)
+
+@Immutable
+data class AutoTranslateUiState(
+	val autoTranslate: Boolean = false,
+	val enabled: Boolean = true,
+	val visible: Boolean = true
 )
 
 fun DarkMode.toUiState(): DarkModeUiState {

@@ -105,14 +105,17 @@ fun MainSettingsContent(
 				)
 			}
 
-			item {
-				AutoTranslateItem(
-					state = uiState.autoTranslate,
-					headlineText = stringResource(id = R.string.auto_translate_to_locale),
-					onChangeState = {
-						onUiSettingsAction(SetAutoTranslate(it))
-					}
-				)
+			if (uiState.autoTranslate.visible) {
+				item {
+					AutoTranslateItem(
+						state = uiState.autoTranslate.autoTranslate,
+						enabled = uiState.autoTranslate.enabled,
+						headlineText = stringResource(id = R.string.auto_translate_to_locale),
+						onChangeState = {
+							onUiSettingsAction(SetAutoTranslate(it))
+						}
+					)
+				}
 			}
 		}
 	}

@@ -1,18 +1,22 @@
 package kanti.catnfact.feat.settings
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kanti.catnfact.data.model.settings.SettingsRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
 class MainSettingsViewModel @Inject constructor(
+	@ApplicationContext context: Context,
 	private val settingsRepository: SettingsRepository
 ) : ViewModel() {
 
@@ -21,7 +25,11 @@ class MainSettingsViewModel @Inject constructor(
 			UiSettingsUiState(
 				darkMode = settingsData.darkMode.toUiState(),
 				colorStyle = settingsData.colorStyle.toUiState(),
-				autoTranslate = settingsData.autoTranslate
+				autoTranslate = AutoTranslateUiState(
+					autoTranslate = settingsData.autoTranslate,
+					enabled = false,
+					visible = context.resources.configuration.locales[0].language != Locale.US.language
+				)
 			)
 		}
 		.stateIn(

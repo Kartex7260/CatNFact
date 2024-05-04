@@ -44,6 +44,6 @@ class SettingsRepositoryImpl @Inject constructor(
 
 		private val DARK_MODE_DEFAULT = DarkMode.AsSystem
 		private val COLOR_STYLE_DEFAULT = ColorStyle.CatNFact
-		private const val AUTO_TRANSLATE_DEFAULT = true
+		private const val AUTO_TRANSLATE_DEFAULT = false
 	}
 }

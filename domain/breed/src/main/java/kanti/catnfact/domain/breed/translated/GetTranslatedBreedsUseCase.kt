@@ -24,8 +24,9 @@ class GetTranslatedBreedsUseCase @Inject constructor(
 		translateEnabled: Boolean
 	): DataResult<List<Breed>, DataError> = withContext(Dispatchers.Default) {
 		var breeds = breedRepository.getLocalBreeds(hashes = hashes)
-		if (translateEnabled) {
-			val currentLocale = context.resources.configuration.locales[0].language
+
+		val currentLocale = context.resources.configuration.locales[0].language
+		if (translateEnabled && currentLocale != ORIGINAL_LOCALE) {
 			val translatedBreedsData = translatedBreedRepository.translate(
 				breeds = breeds.map { it.toData()},
 				fromLocaleCode = ORIGINAL_LOCALE,

@@ -9,9 +9,7 @@ import kanti.catnfact.data.model.fact.Fact
 import kanti.catnfact.data.model.fact.FactRepository
 import kanti.catnfact.data.model.fact.translated.TranslatedFactRepository
 import kanti.catnfact.data.model.fact.translated.datasource.HalfFact
-import kanti.catnfact.data.runIfNotError
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import java.util.Locale
 import javax.inject.Inject
@@ -29,8 +27,8 @@ class GetTranslatedFactsUseCase @Inject constructor(
 		return withContext(Dispatchers.Default) {
 			var facts = factRepository.getLocalFacts(hashes)
 
-			if (translateEnabled) {
-				val currentLocaleCode = context.resources.configuration.locales.get(0).language
+			val currentLocaleCode = context.resources.configuration.locales.get(0).language
+			if (translateEnabled && currentLocaleCode != SOURCE_LOCALE) {
 				val translatedFactsResult = translatedFactRepository.translate(
 					facts = facts.asSequence().map { fact ->
 						HalfFact(hash = fact.hash, fact = fact.fact)

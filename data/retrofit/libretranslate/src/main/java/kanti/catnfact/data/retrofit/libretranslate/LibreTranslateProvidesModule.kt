@@ -1,7 +1,7 @@
 package kanti.catnfact.data.retrofit.libretranslate
 
-import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kanti.catnfact.data.retrofit.libretranslate.translate.LibreTranslateService
@@ -11,14 +11,14 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-interface LibreTranslateBindsModule {
+object LibreTranslateProvidesModule {
 
-	@Binds
+	@Provides
 	@Singleton
 	@LibreTranslateRetrofitQualifier
 	fun bindLibreTranslateRetrofit(): Retrofit = buildRetrofit()
 
-	@Binds
+	@Provides
 	@Singleton
 	fun bindLibreTranslateService(
 		@LibreTranslateRetrofitQualifier retrofit: Retrofit

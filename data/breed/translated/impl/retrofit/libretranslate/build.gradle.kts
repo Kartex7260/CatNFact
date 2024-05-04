@@ -36,7 +36,7 @@ dependencies {
 	implementation(libs.dagger.hilt.android)
 	kapt(libs.dagger.hilt.android.compiler)
 
-	implementation(libs.androidx.annotation)
+	implementation(libs.retrofit)
 
 	implementation(project(":data"))
 	implementation(project(":data:breed:translated:api"))

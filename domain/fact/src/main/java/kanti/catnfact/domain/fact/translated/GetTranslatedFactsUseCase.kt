@@ -4,6 +4,7 @@ import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kanti.catnfact.data.DataError
 import kanti.catnfact.data.DataResult
+import kanti.catnfact.data.alsoIfNotError
 import kanti.catnfact.data.model.fact.Fact
 import kanti.catnfact.data.model.fact.FactRepository
 import kanti.catnfact.data.model.fact.translated.TranslatedFactRepository
@@ -26,8 +27,7 @@ class GetTranslatedFactsUseCase @Inject constructor(
 		translateEnabled: Boolean = true
 	): DataResult<List<Fact>, DataError> {
 		return withContext(Dispatchers.Default) {
-			val factsDeferred = async { factRepository.getLocalFacts(hashes) }
-			val facts = factsDeferred.await()
+			var facts = factRepository.getLocalFacts(hashes)
 
 			if (translateEnabled) {
 				val currentLocaleCode = context.resources.configuration.locales.get(0).language
@@ -38,17 +38,16 @@ class GetTranslatedFactsUseCase @Inject constructor(
 					fromLocaleCode = SOURCE_LOCALE,
 					destinationLocaleCode = currentLocaleCode
 				)
-				translatedFactsResult.runIfNotError { translated ->
-					val translatedFacts = facts.map { fact ->
+				translatedFactsResult.alsoIfNotError { translated ->
+					facts = facts.map { fact ->
 						fact.copy(
 							fact = translated.first { it.hash == fact.hash }.fact
 						)
 					}
-					DataResult.Success(translatedFacts)
 				}
-			} else {
-				DataResult.Success(facts)
 			}
+
+			DataResult.Success(facts)
 		}
 	}
 

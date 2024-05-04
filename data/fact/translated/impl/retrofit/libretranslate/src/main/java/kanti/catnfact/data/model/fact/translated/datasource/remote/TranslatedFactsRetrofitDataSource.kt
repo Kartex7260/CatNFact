@@ -1,8 +1,6 @@
 package kanti.catnfact.data.model.fact.translated.datasource.remote
 
-import android.net.http.HttpException
-import android.os.Build
-import androidx.annotation.RequiresExtension
+import kanti.catnfact.data.BadRequestError
 import kanti.catnfact.data.DataError
 import kanti.catnfact.data.DataResult
 import kanti.catnfact.data.NoConnectionError
@@ -20,7 +18,6 @@ class TranslatedFactsRetrofitDataSource @Inject constructor(
 	private val libreTranslateService: LibreTranslateService
 ) : TranslatedFactRemoteDataSource {
 
-	@RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
 	override suspend fun translate(
 		facts: List<HalfFact>,
 		fromLocaleCode: String,
@@ -49,10 +46,11 @@ class TranslatedFactsRetrofitDataSource @Inject constructor(
 			DataResult.Error<List<TranslatedFact>, DataError>(
 				error = NoConnectionError(ex.message, ex)
 			)
-		} catch (ex: HttpException) {
-			DataResult.Error<List<TranslatedFact>, DataError>(
-				error = UnexpectedError(ex.message, ex)
-			)
+		} catch (ex: retrofit2.HttpException) {
+			when (ex.code()) {
+				400 -> DataResult.Error(error = BadRequestError(ex.message, ex))
+				else -> DataResult.Error(error = UnexpectedError(ex.message, ex))
+			}
 		}
 	}
 

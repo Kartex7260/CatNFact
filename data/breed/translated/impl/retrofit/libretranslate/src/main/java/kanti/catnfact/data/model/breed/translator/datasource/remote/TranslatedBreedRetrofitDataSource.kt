@@ -1,8 +1,6 @@
 package kanti.catnfact.data.model.breed.translator.datasource.remote
 
-import android.net.http.HttpException
-import android.os.Build
-import androidx.annotation.RequiresExtension
+import kanti.catnfact.data.BadRequestError
 import kanti.catnfact.data.DataError
 import kanti.catnfact.data.DataResult
 import kanti.catnfact.data.NoConnectionError
@@ -13,6 +11,7 @@ import kanti.catnfact.data.retrofit.libretranslate.translate.LibreTranslateServi
 import kanti.catnfact.data.retrofit.libretranslate.translate.TranslateBody
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 
@@ -20,7 +19,6 @@ class TranslatedBreedRetrofitDataSource @Inject constructor(
 	private val libreTranslateService: LibreTranslateService
 ) : TranslatedBreedRemoteDataSource {
 
-	@RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
 	override suspend fun translated(
 		breeds: List<BreedData>,
 		fromLocaleCode: String,
@@ -62,7 +60,10 @@ class TranslatedBreedRetrofitDataSource @Inject constructor(
 		} catch (ex: IOException) {
 			DataResult.Error(NoConnectionError(ex.message, ex))
 		} catch (ex: HttpException) {
-			DataResult.Error(UnexpectedError(ex.message, ex))
+			when (ex.code()) {
+				400 -> DataResult.Error(BadRequestError(ex.message, ex))
+				else -> DataResult.Error(UnexpectedError(ex.message, ex))
+			}
 		}
 	}
 

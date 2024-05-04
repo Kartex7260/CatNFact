@@ -25,6 +25,9 @@
             <option value="$PROJECT_DIR$/data/breed/translated/api" />
             <option value="$PROJECT_DIR$/data/breed/translated/impl" />
             <option value="$PROJECT_DIR$/data/breed/translated/impl/retrofit" />
+            <option value="$PROJECT_DIR$/data/breed/translated/impl/retrofit/libretranslate" />
+            <option value="$PROJECT_DIR$/data/breed/translated/impl/retrofit/ya" />
+            <option value="$PROJECT_DIR$/data/breed/translated/impl/retrofit/ya/translator" />
             <option value="$PROJECT_DIR$/data/breed/translated/impl/room" />
             <option value="$PROJECT_DIR$/data/fact" />
             <option value="$PROJECT_DIR$/data/fact/api" />
@@ -35,9 +38,13 @@
             <option value="$PROJECT_DIR$/data/fact/translated/api" />
             <option value="$PROJECT_DIR$/data/fact/translated/impl" />
             <option value="$PROJECT_DIR$/data/fact/translated/impl/retrofit" />
+            <option value="$PROJECT_DIR$/data/fact/translated/impl/retrofit/libretranslate" />
+            <option value="$PROJECT_DIR$/data/fact/translated/impl/retrofit/ya" />
+            <option value="$PROJECT_DIR$/data/fact/translated/impl/retrofit/ya/translator" />
             <option value="$PROJECT_DIR$/data/fact/translated/impl/room" />
             <option value="$PROJECT_DIR$/data/retrofit" />
             <option value="$PROJECT_DIR$/data/retrofit/catfact" />
+            <option value="$PROJECT_DIR$/data/retrofit/libretranslate" />
             <option value="$PROJECT_DIR$/data/retrofit/ya" />
             <option value="$PROJECT_DIR$/data/retrofit/ya/translator" />
             <option value="$PROJECT_DIR$/data/room" />

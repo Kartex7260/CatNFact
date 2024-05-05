@@ -38,10 +38,49 @@ android {
 	buildTypes {
 		release {
 			signingConfig = signingConfigs["release"]
+
+			isDebuggable = false
+			applicationIdSuffix = null
+
+			isMinifyEnabled = true
+			proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+		}
+		debug {
+			signingConfig = signingConfigs["release"]
+
+			isDebuggable = true
+			applicationIdSuffix = ".debug"
+			versionNameSuffix = "-debug"
+
 			isMinifyEnabled = false
 			proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
 		}
+		create("pre-release") {
+			signingConfig = signingConfigs["release"]
+
+			isDebuggable = false
+			applicationIdSuffix = ".prerelease"
+			versionNameSuffix = "-pre-release"
+
+			isMinifyEnabled = false
+			proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+
+			matchingFallbacks += listOf("release")
+		}
+		create("debug-minify") {
+			signingConfig = signingConfigs["release"]
+
+			isDebuggable = true
+			applicationIdSuffix = ".debug.minify"
+			versionNameSuffix = "-debug-minify"
+
+			isMinifyEnabled = true
+			proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+
+			matchingFallbacks += listOf("debug")
+		}
 	}
+
 	compileOptions {
 		sourceCompatibility = JavaVersion.VERSION_1_8
 		targetCompatibility = JavaVersion.VERSION_1_8

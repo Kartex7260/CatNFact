@@ -19,3 +19,12 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-keep class kanti.catnfact.data.retrofit.catfact.breed.** { <fields>; }
+-keep class kanti.catnfact.data.retrofit.catfact.fact.** { <fields>; }
+-keep class kanti.catnfact.data.retrofit.libretranslate.translate.** { <fields>; }
+
+-keep class kanti.catnfact.data.room.breed.** { <fields>; }
+-keep class kanti.catnfact.data.room.fact.** { <fields>; }
+
+-keepattributes *Annotation*

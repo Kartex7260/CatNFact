@@ -1,4 +1,21 @@
+import java.util.Calendar
 import java.util.Properties
+import java.util.TimeZone
+
+val calendar: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+
+fun getVersionByCalendar(calendar: Calendar): String {
+	val day = calendar.get(Calendar.DAY_OF_MONTH).toString().padStart(2, '0')
+	val month = calendar.get(Calendar.MONTH).toString().padStart(2, '0')
+	val year = calendar.get(Calendar.YEAR).toString().padStart(4, '0')
+	return "$year.$month.$day"
+}
+
+fun getMicroVersionByCalendar(calendar: Calendar): String {
+	val hour = calendar.get(Calendar.HOUR_OF_DAY)
+	val minute = calendar.get(Calendar.MINUTE)
+	return (hour * 60 + minute).toString().padStart(4, '0')
+}
 
 plugins {
 	alias(libs.plugins.androidApplication)
@@ -30,7 +47,7 @@ android {
 		minSdk = 24
 		targetSdk = 34
 		versionCode = 1
-		versionName = "1.0"
+		versionName = getVersionByCalendar(calendar)
 
 		testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 	}
@@ -50,7 +67,7 @@ android {
 
 			isDebuggable = true
 			applicationIdSuffix = ".debug"
-			versionNameSuffix = "-debug"
+			versionNameSuffix = "-debug.${getMicroVersionByCalendar(calendar)}"
 
 			isMinifyEnabled = false
 			proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
@@ -72,7 +89,7 @@ android {
 
 			isDebuggable = true
 			applicationIdSuffix = ".debug.minify"
-			versionNameSuffix = "-debug-minify"
+			versionNameSuffix = "-debug-minify.${getMicroVersionByCalendar(calendar)}"
 
 			isMinifyEnabled = true
 			proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
